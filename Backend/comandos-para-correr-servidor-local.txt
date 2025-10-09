@@ -1,0 +1,7 @@
+Activar:
+cmd: .\venv\Scripts\activate 
+git bash: source venv/Scripts/activate
+
+Configurar: set FLASK_APP=src:create_app()(opcional por si no funciona con los dos comandos acitvacion de varibales de entorno y flask run)
+
+Ejecutar: flask run
