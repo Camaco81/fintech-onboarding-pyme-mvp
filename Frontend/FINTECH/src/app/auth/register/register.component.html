@@ -1,0 +1,47 @@
+<div class="flex flex-col items-center justify-center min-h-screen bg-white">
+    <h1 class="text-center text-5xl font-bold mb-5">Registrate</h1>
+   
+    <form class="w-full max-w-xs" ngIf="loginForm">
+        <div class="mb-4">
+            <input type="text"  id="nombre" placeholder="Nombre completo" class="form-control w-full px-4 py-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+            <span class="text-sm text-red-500" gIf="loginForm.controls['email']?.invalid && loginForm.controls['email']?.touched">
+                Ingresa tu nombre completo.
+            </span>
+        
+        </div>
+        <div class="mb-4">
+            <input type="text"  id="email" placeholder="Correo electrónico" class="form-control w-full px-4 py-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+            <span class="text-sm text-red-500" gIf="loginForm.controls['email']?.invalid && loginForm.controls['email']?.touched">
+                Ingresa un correo electrónico válido.
+            </span>
+        
+        </div>
+        <div class="mb-4">
+            <input type="password" id="password" placeholder="Contraseña" class="form-control w-full px-3 py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+        <span class="text-sm text-red-500" gIf="loginForm.controls['email']?.invalid && loginForm.controls['email']?.touched">
+                Ingresa tu pasword.
+            </span>
+        
+        </div>
+        <div class="mb-6">
+            <input type="number"  id="telefono" placeholder="Ingresa tu numero telefono" class="form-control w-full px-4 py-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+            <span class="text-sm text-red-500" gIf="loginForm.controls['email']?.invalid && loginForm.controls['email']?.touched">
+                Numero telefonico.
+            </span>
+        
+        </div>
+        <div class="flex justify-between items-center mb-6">
+            <label class="flex items-center text-gray-700">
+                <!-- <input type="checkbox" class="mr-2 accent-blue-600"/>
+                Recordarme -->
+            </label>
+            <a href="#" class="text-sm text-blue-600 hover:underline">¿Olvidaste tu contraseña?</a>
+        </div>
+        <div class="flex justify-between items-center mb-6">
+            <a href="auth/login" class="text-sm flex items-center text-blue-600 hover:underline">Ya tienes cuenta.Inicia sesión</a>
+        </div>
+        <button type="submit" class="w-full py-3 bg-blue-700 text-white rounded hover:bg-blue-800 font-semibold text-base transition-colors">
+            Entrar
+        </button>
+    </form>
+</div>
