@@ -4,6 +4,7 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { FooterComponent } from './footer/footer.component';
 
 
+
 // Importa aquí los componentes, directivas y pipes compartidos
 // import { ExampleComponent } from './example/example.component';
 
@@ -14,12 +15,14 @@ import { FooterComponent } from './footer/footer.component';
     imports: [
         CommonModule,
         NavbarComponent,
-        FooterComponent
+        FooterComponent, 
+       
+        
     ],
     exports: [
-        NavbarComponent,
-        FooterComponent,
-        CommonModule
+        
+        CommonModule, 
+        
     ]
 })
 export class SharedModule { }

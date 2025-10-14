@@ -4,7 +4,7 @@
     <form class="w-full max-w-xs" ngIf="loginForm">
         <div class="mb-6">
             <input type="text"  id="email" placeholder="Correo electrónico" class="form-control w-full px-4 py-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"/>
-            <span class="text-sm text-red-500" *ngIf="loginForm.controls['email']?.invalid && loginForm.controls['email']?.touched">
+            <span class="text-sm text-red-500" gIf="loginForm.controls['email']?.invalid && loginForm.controls['email']?.touched">
                 Ingresa un correo electrónico válido.
             </span>
         
@@ -22,7 +22,7 @@
             <a href="#" class="text-sm text-blue-600 hover:underline">¿Olvidaste tu contraseña?</a>
         </div>
         <div class="flex justify-between items-center mb-6">
-            <p routerLink="register" class="text-sm text-blue-600 hover:underline">Registrate</p>
+            <a href="auth/register" class="text-sm flex items-center text-blue-600 hover:underline">Aun no tienes cuenta?Registrate</a>
         </div>
         <button type="submit" class="w-full py-3 bg-blue-700 text-white rounded hover:bg-blue-800 font-semibold text-base transition-colors">
             Entrar
