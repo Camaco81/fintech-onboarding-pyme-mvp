@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
 
@@ -7,42 +7,37 @@ import { CommonModule } from '@angular/common';
 import { LoginService } from '../../services/login.service';
 @Component({
   selector: 'app-login',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet,ReactiveFormsModule, CommonModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
 export class LoginComponent {
 
+  private fb = inject (FormBuilder);
+  public loginForm : FormGroup = this.fb.group({
+
+    email: new FormControl('email', [Validators.required, Validators.email]),
+    password: new FormControl('password', [Validators.required, Validators.minLength(6)])
+
+  });
+
   email : string = '';
   password : string = '';
   id: string = '';
 
-    loginForm = new FormGroup({
-
-    email: new FormControl('email', [Validators.required, Validators.email]),
-    password: new FormControl('password', [Validators.required, Validators.minLength(6)])
-  });
-
+    
   constructor(
     private loginService : LoginService, 
-    
-    private fb :FormBuilder,
-    ){ 
+    // private fb : FormBuilder,
+    ){ }
 
-    this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]]
-    })
-  }
-  async login() {
-    try {
-      const user = await this.loginService.login(this.email, this.password);
-      console.log(this.email, this.password);
-      console.log('Usuario logueado:', user);
-    } catch (error) {
-      console.error('Error al iniciar sesión:', error);
+    login(){
+      const {email, password} = this.loginForm.value;
+      this.loginService.login(email, password).subscribe( res => {
+        console.log(this.loginForm.value);
+      });
     }
-  }
+  
   
 
 

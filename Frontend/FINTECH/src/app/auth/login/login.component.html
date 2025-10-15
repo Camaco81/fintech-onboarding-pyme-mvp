@@ -1,18 +1,29 @@
 <div class="flex flex-col items-center justify-center min-h-screen  bg-white">
     <h1 class="text-center text-5xl font-bold mb-5">Inicio sesión </h1>
     <p class="text-center mb-5 text-blue-500" >Accede a tu cuenta para continuar</p>
-    <form class="w-full max-w-xs" ngIf="loginForm">
+    <form class="w-full max-w-xs" 
+    autocomplete="off"   
+    [formGroup]="loginForm" (ngSubmit)="login()">
         <div class="mb-6">
-            <input type="text"  id="email" placeholder="Correo electrónico" class="form-control w-full px-4 py-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"/>
-            <span class="text-sm text-red-500" gIf="loginForm.controls['email']?.invalid && loginForm.controls['email']?.touched">
+            <input type="email" 
+            formControlName="email"
+            
+             placeholder="Correo electrónico" 
+             class="form-control w-full px-4 py-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+            <span class="text-sm text-red-500" 
+            *ngIf="loginForm.controls['email']?.invalid && loginForm.controls['email']?.touched">
                 Ingresa un correo electrónico válido.
             </span>
-        
-        </div>
+            </div>
         <div class="mb-4">
-            <input type="password" id="password" placeholder="Contraseña" class="form-control w-full px-3 py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"/>
-        
-        
+            <input type="password" 
+            formControlName="password"
+            placeholder="Contraseña" 
+            class="form-control w-full px-3 py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+               <span class="text-sm text-red-500" 
+            *ngIf="loginForm.controls['password']?.invalid && loginForm.controls['password']?.touched">
+                Verifica tu contraseña (mínimo 6 caracteres).
+            </span>
         </div>
         <div class="flex justify-between items-center mb-6">
             <label class="flex items-center text-gray-700">
@@ -24,8 +35,11 @@
         <div class="flex justify-between items-center mb-6">
             <a href="auth/register" class="text-sm flex items-center text-blue-600 hover:underline">Aun no tienes cuenta?Registrate</a>
         </div>
-        <button type="submit" class="w-full py-3 bg-blue-700 text-white rounded hover:bg-blue-800 font-semibold text-base transition-colors">
-            Entrar
+        <button type="submit" 
+        [disabled]="loginForm.invalid"
+        class="w-full py-3 bg-blue-700 text-white rounded hover:bg-blue-800 font-semibold text-base transition-colors">
+            
+        Entrar
         </button>
     </form>
 </div>
