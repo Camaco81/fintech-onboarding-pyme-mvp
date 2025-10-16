@@ -1,0 +1,19 @@
+# .gitignore
+
+# 🛑 ARCHIVOS DE CREDENCIALES Y SECRETOS
+# Este es el archivo que causa el error de GitHub:
+Backend/credentials/firebase-admin-sdk-1.json
+
+# Excluye cualquier otro archivo sensible de configuración o entorno
+.env
+*.key
+*.pem
+*.secret
+
+# 📦 EXCLUYE CARPETAS DE ENTORNO/COMPILACIÓN
+# Entorno virtual de Python
+venv/
+
+# Archivos de compilación de Python (si aplica)
+__pycache__/
+*.pyc
