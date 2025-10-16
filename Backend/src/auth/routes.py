@@ -1,9 +1,8 @@
-# src/auth/routes.py (VERSIÓN FINAL Y BIEN INDENTADA)
+# src/auth/routes.py (VERSIÓN CORREGIDA)
 
 from flask import Blueprint, request, jsonify
-from firebase_admin import auth 
+from firebase_admin import auth
 from .services import create_pyme_user
-# Importamos sys y traceback aquí para que estén disponibles en el bloque except
 import sys
 import traceback
 
@@ -18,6 +17,9 @@ def setup_user():
 
     email = data.get('email')
     password = data.get('password')
+    # 🔑 CORRECCIÓN: Usar '' si es None para evitar problemas en DB o en services.py
+    nombre_completo = data.get('nombre_completo') or ''
+    telefono = data.get('telefono') or ''
     rol = 'PYME'
     
     if not email or not password:
@@ -30,7 +32,13 @@ def setup_user():
         firebase_uid = user.uid
 
         # 2. Insertar en DB (esta función tiene el conn.commit())
-        db_success_message, db_error = create_pyme_user(firebase_uid, email, rol) 
+        db_success_message, db_error = create_pyme_user(
+            firebase_uid,
+            email,
+            nombre_completo,
+            telefono,
+            rol
+        )
 
         if db_error:
             # 🚨 Si la inserción en DB falla, BORRAR el usuario de Firebase.
@@ -42,23 +50,22 @@ def setup_user():
                 
             # Luego, reportar el error 500 con el detalle de Neon
             return jsonify({
-                "mensaje": f"Registro fallido: El usuario se creó en Firebase, pero falló al guardar en Neon DB. DETALLE: {db_error}"
+                "mensaje": f"Registro fallido. DETALLE: {db_error}"
             }), 500
 
         # 3. Éxito Final
-        # La línea de send_email_verification está comentada o eliminada para evitar el AttributeError.
-        
         return jsonify({
+            # Mensaje de éxito claro para el frontend
             "mensaje": f"🎉 Registro exitoso. Tu cuenta fue creada. Ahora puedes iniciar sesión.",
             "usuario": {"email": email, "rol": rol}
-        }), 200
-        
+        }), 200 # 🟢 Código 200 OK para éxito
+
     except auth.EmailAlreadyExistsError:
-        # Error específico de Firebase si el email ya existe
-        return jsonify({"mensaje": "El email ya está registrado en Firebase."}), 409
+        # 🚨 Error específico de Firebase si el email ya existe
+        return jsonify({"mensaje": "El email ya está registrado en Firebase. Por favor, inicia sesión."}), 409
     
     except Exception as e:
-        # 🚨 Bloque general, ahora con impresión de traceback para diagnóstico
+        # 🚨 Bloque general de fallo
         print(f"\n[ERROR CRÍTICO] Fallo Inesperado en la Ruta /setup-user: {e}", file=sys.stderr)
         traceback.print_exc(file=sys.stderr)
         

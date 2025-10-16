@@ -1,47 +1,60 @@
 <div class="flex flex-col items-center justify-center min-h-screen bg-white">
-    <h1 class="text-center text-5xl font-bold mb-5">Registrate</h1>
-   
-    <form class="w-full max-w-xs" ngIf="loginForm">
+    <h1 class="text-center text-5xl font-bold mb-5">Regístrate</h1>
+    
+    <form class="w-full max-w-xs" [formGroup]="registerForm" (ngSubmit)="register()">
+        
+        <div *ngIf="registrationSuccess" class="mb-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded">
+            🎉 ¡Registro exitoso! Revisa tu bandeja de entrada para verificar tu correo antes de iniciar sesión.
+        </div>
+        <div *ngIf="apiError" class="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+            🚨 Error: {{ apiError }}
+        </div>
+        
         <div class="mb-4">
-            <input type="text"  id="nombre" placeholder="Nombre completo" class="form-control w-full px-4 py-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"/>
-            <span class="text-sm text-red-500" gIf="loginForm.controls['email']?.invalid && loginForm.controls['email']?.touched">
+            <input type="text" formControlName="nombre" id="nombre" placeholder="Nombre completo" 
+                   class="form-control w-full px-4 py-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <span class="text-sm text-red-500" *ngIf="registerForm.controls['nombre'].invalid && registerForm.controls['nombre'].touched">
                 Ingresa tu nombre completo.
             </span>
-        
         </div>
+        
         <div class="mb-4">
-            <input type="text"  id="email" placeholder="Correo electrónico" class="form-control w-full px-4 py-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"/>
-            <span class="text-sm text-red-500" gIf="loginForm.controls['email']?.invalid && loginForm.controls['email']?.touched">
-                Ingresa un correo electrónico válido.
+            <input type="email" formControlName="email" id="email" placeholder="Correo electrónico" 
+                   class="form-control w-full px-4 py-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <span class="text-sm text-red-500" *ngIf="registerForm.controls['email'].invalid && registerForm.controls['email'].touched">
+                <span *ngIf="registerForm.controls['email'].errors?.['required']">El correo es obligatorio.</span>
+                <span *ngIf="registerForm.controls['email'].errors?.['email']">Ingresa un correo electrónico válido.</span>
             </span>
-        
         </div>
+        
         <div class="mb-4">
-            <input type="password" id="password" placeholder="Contraseña" class="form-control w-full px-3 py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"/>
-        <span class="text-sm text-red-500" gIf="loginForm.controls['email']?.invalid && loginForm.controls['email']?.touched">
-                Ingresa tu pasword.
+            <input type="password" formControlName="password" id="password" placeholder="Contraseña" 
+                   class="form-control w-full px-3 py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <span class="text-sm text-red-500" *ngIf="registerForm.controls['password'].invalid && registerForm.controls['password'].touched">
+                La contraseña debe tener al menos 6 caracteres.
             </span>
-        
         </div>
+        
         <div class="mb-6">
-            <input type="number"  id="telefono" placeholder="Ingresa tu numero telefono" class="form-control w-full px-4 py-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"/>
-            <span class="text-sm text-red-500" gIf="loginForm.controls['email']?.invalid && loginForm.controls['email']?.touched">
-                Numero telefonico.
+            <input type="number" formControlName="telefono" id="telefono" placeholder="Ingresa tu número de teléfono" 
+                   class="form-control w-full px-4 py-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <span class="text-sm text-red-500" *ngIf="registerForm.controls['telefono'].invalid && registerForm.controls['telefono'].touched">
+                Ingresa un número de teléfono válido.
             </span>
+        </div>
         
-        </div>
         <div class="flex justify-between items-center mb-6">
-            <label class="flex items-center text-gray-700">
-                <!-- <input type="checkbox" class="mr-2 accent-blue-600"/>
-                Recordarme -->
-            </label>
-            <a href="#" class="text-sm text-blue-600 hover:underline">¿Olvidaste tu contraseña?</a>
+            <a routerLink="/auth/login" class="text-sm flex items-center text-blue-600 hover:underline">Ya tienes cuenta. Inicia sesión</a>
         </div>
-        <div class="flex justify-between items-center mb-6">
-            <a href="auth/login" class="text-sm flex items-center text-blue-600 hover:underline">Ya tienes cuenta.Inicia sesión</a>
-        </div>
-        <button type="submit" class="w-full py-3 bg-blue-700 text-white rounded hover:bg-blue-800 font-semibold text-base transition-colors">
-            Entrar
+        
+        <button type="submit" [disabled]="registerForm.invalid" 
+                class="w-full py-3 bg-blue-700 text-white rounded font-semibold text-base transition-colors"
+                [ngClass]="{'opacity-50 cursor-not-allowed': registerForm.invalid, 'hover:bg-blue-800': registerForm.valid}">
+            Registrarme
         </button>
     </form>
 </div>

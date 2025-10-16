@@ -1,49 +1,66 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { ReactiveFormsModule, FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
+import { Component, inject } from '@angular/core';
+import { RouterOutlet, Router } from '@angular/router';
+// 🔑 Importación necesaria para *ngIf, *ngFor, etc.
+import { CommonModule } from '@angular/common'; 
+// 🔑 Importación necesaria para [formGroup] y FormControl
+import { ReactiveFormsModule, FormGroup, Validators, FormBuilder } from '@angular/forms'; 
 
-import { CommonModule } from '@angular/common';
+import { AuthService } from '../../services/auth.service';
 
-import { LoginService } from '../../services/login.service';
 @Component({
   selector: 'app-login',
-  imports: [RouterOutlet],
+  standalone: true, // Asegura que se defina como Standalone
+  // 💥 CORRECCIÓN DE ERROR: Añadir CommonModule y ReactiveFormsModule
+  imports: [
+    RouterOutlet, 
+    ReactiveFormsModule,
+     CommonModule
+  ], 
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
 export class LoginComponent {
 
-  email : string = '';
-  password : string = '';
-  id: string = '';
+  loginForm!: FormGroup;
 
-    loginForm = new FormGroup({
+  // Uso de 'inject' para inyección moderna
+  private authService = inject(AuthService);
+  private fb = inject(FormBuilder); 
+  private router = inject(Router);
 
-    email: new FormControl('email', [Validators.required, Validators.email]),
-    password: new FormControl('password', [Validators.required, Validators.minLength(6)])
-  });
+  constructor() {
+    this.initializeForm(); 
+  }
 
-  constructor(
-    private loginService : LoginService, 
-    
-    private fb :FormBuilder,
-    ){ 
-
+  private initializeForm() {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]]
-    })
-  }
-  async login() {
-    try {
-      const user = await this.loginService.login(this.email, this.password);
-      console.log(this.email, this.password);
-      console.log('Usuario logueado:', user);
-    } catch (error) {
-      console.error('Error al iniciar sesión:', error);
-    }
+    });
   }
   
+  // Función para manejar el envío del formulario
+  async login() {
+    if (this.loginForm.invalid) {
+      console.warn('⚠️ Formulario inválido. Mostrando errores de validación.');
+      this.loginForm.markAllAsTouched(); 
+      return; 
+    }
+    
+    const { email, password } = this.loginForm.value;
 
+    try {
+      // Usamos los valores correctos del formulario
+      const user = await this.authService.login(email, password); 
 
+      console.log(`✅ Login Exitoso para: ${email}`);
+      console.log('Datos del usuario (del servicio):', user);
+      
+      this.router.navigate(['/dashboard']); 
+
+    } catch (error) {
+      console.error('❌ Error al iniciar sesión:', error);
+      // Lógica de errores UI
+    }
+  }
 }

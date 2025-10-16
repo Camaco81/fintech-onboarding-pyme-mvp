@@ -1,31 +1,38 @@
-# src/auth/services.py (VERSIÓN FINAL Y ESTÁNDAR)
+# src/auth/services.py (VERSIÓN CORREGIDA Y ESTÁNDAR)
 
 from src.database.db_connector import get_db_connection
-from psycopg2 import IntegrityError, Error as Psycopg2Error 
+from psycopg2 import IntegrityError, Error as Psycopg2Error
 import sys
 import traceback
 
-# NOTA: datetime ya no es necesario si no lo usas.
-
-def create_pyme_user(firebase_uid: str, email: str, rol: str = 'PYME'):
+# 🔑 CLAVE: El rol tiene un valor por defecto ('PYME') para asegurar que nunca sea null
+def create_pyme_user(firebase_uid: str, email: str, nombre_completo: str, telefono: str, rol: str = 'PYME'):
     conn = None
     cur = None
+    
+    # Aseguramos que el rol sea una cadena válida (aunque ya tiene un valor por defecto)
+    if not isinstance(rol, str):
+        # Si no es una cadena (es None, int, etc.), forzamos el valor por defecto
+        rol_limpio = 'pyme'
+    else:
+        rol_limpio = rol.lower()
+    
     try:
-        # 1. Obtener la conexión directa
+        # 1. Obtener la conexión
         conn = get_db_connection()
         cur = conn.cursor()
         
-        # 2. Ejecutar INSERT SQL simplificado
-        # La tabla maneja 'id' y 'fecha_creacion' automáticamente
-        rol_limpio = rol.lower() # Opcional si la DB no es sensible a mayúsculas
+        # 2. Ejecutar INSERT SQL corregido
+      
+       
+        # src/auth/services.py (dentro de create_pyme_user)
         cur.execute(
         """
-         INSERT INTO usuarios (firebase_uid, email, rol) 
-         VALUES (%s, %s, %s);
+        INSERT INTO usuarios (firebase_uid, email, rol, nombre_completo, telefono) 
+        VALUES (%s, %s, %s, %s, %s);
         """,
-         (firebase_uid, email, rol_limpio)
+        (firebase_uid, email, rol_limpio, nombre_completo, telefono)
         )
-        
         # 3. Commit
         conn.commit()
         return "Usuario registrado exitosamente en DB", None # Éxito

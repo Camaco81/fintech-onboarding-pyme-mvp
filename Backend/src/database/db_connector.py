@@ -2,17 +2,24 @@
 
 import os
 import psycopg2
-from dotenv import load_dotenv # Si usas .env
+# 🔑 CLAVE: Importar las funciones para cargar el archivo .env
+from dotenv import load_dotenv, dotenv_values 
 
-load_dotenv() # Carga las variables del .env
+# 1. Forzar la carga de variables del archivo .env
+load_dotenv() 
 
 def get_db_connection():
-    # Esta es la línea crucial
-    DATABASE_URL = os.getenv("DATABASE_URL") 
+    # 2. Intenta leer la variable, ya sea del entorno o del .env cargado.
+    DATABASE_URL = os.environ.get('DATABASE_URL')
+    
+    # 3. Si por alguna razón sigue fallando, usa dotenv_values como último recurso.
     if not DATABASE_URL:
-        # Esto nos avisaría si la variable no está cargada
-        raise ValueError("DATABASE_URL not found in environment variables.")
+        config = dotenv_values(".env")
+        DATABASE_URL = config.get('DATABASE_URL')
+        
+    if not DATABASE_URL:
+        raise ValueError("DATABASE_URL no está configurada.") 
 
-    # El fallo ocurre si la URL es incorrecta/expirada
+    # La conexión limpia, sin 'search_path' ni pooler options
     conn = psycopg2.connect(DATABASE_URL)
     return conn

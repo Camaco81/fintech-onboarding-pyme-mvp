@@ -24,7 +24,7 @@ def create_app(config_class=Config):
         ruta_actual = os.path.abspath(os.path.dirname(__file__))
         
         # 🚨 CÁLCULO DE RUTA: Sube un nivel (..) y entra a 'credentials'
-        ruta_credenciales = os.path.join(ruta_actual, '..', 'credentials', 'firebase-admin-sdk.json')
+        ruta_credenciales = os.path.join(ruta_actual, '..', 'credentials', 'firebase-admin-sdk-1.json')
         
         print(f"\n[INFO] Ruta de credenciales probada: {ruta_credenciales}")
         
