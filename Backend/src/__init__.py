@@ -3,30 +3,63 @@
 import os
 from flask import Flask
 from config import Config
-# 🚨 NECESITAS importar 'db' para el db.create_all() interno
 from src.database.db_setup import init_db, db 
 from flask_cors import CORS
+
+# Importaciones de Firebase y utilidades necesarias
+import json
+import base64
 from firebase_admin import credentials, initialize_app
 
-# ... (otras importaciones y código de Firebase) ...
+# Importar el Blueprint (asumo que esta ruta es correcta)
+from .auth import auth_bp 
 
-# 🚨 CAMBIO CLAVE: Añadir el argumento 'init_db_tables' (o 'init_db')
-def create_app(config_class=Config, init_db_tables=False): 
+
+def create_app(config_class=Config, init_db_tables=False):
     app = Flask(__name__)
     app.config.from_object(config_class)
     CORS(app)
 
-    # 1. Tu Lógica de Inicialización de Firebase (lo que ya está correcto)
-    # ...
-    
+    # 1. Lógica para OBTENER las credenciales (cred)
+    base64_json_string = os.getenv('FIREBASE_CREDENTIALS_BASE64')
+    cred = None # Inicializamos 'cred' a None para asegurar su alcance
+
+    if base64_json_string:
+        print("[INFO] Usando credenciales decodificadas de Render (Producción).")
+
+        # Decodificación y carga del JSON
+        json_bytes = base64.b64decode(base64_json_string)
+        json_content = json_bytes.decode('utf-8')
+        service_account_info = json.loads(json_content)
+
+        # Asignación de credenciales
+        cred = credentials.Certificate(service_account_info)
+
+    else:
+        # Fallback al archivo local (Desarrollo)
+        local_path = os.getenv('FIREBASE_CREDENTIALS_PATH')
+        if not local_path:
+            # En producción esto no debería pasar si se usa el if de arriba
+            raise EnvironmentError("Falta la variable FIREBASE_CREDENTIALS_PATH en el entorno local (.env).")
+
+        print(f"[INFO] Usando archivo local de credenciales: {local_path}")
+        cred = credentials.Certificate(local_path)
+
     # 2. Inicializar Firebase y la DB
-    initialize_app(cred)
-    init_db(app) # <--- Vincula la instancia 'db' a 'app'
+
+    # 🔥 CORRECCIÓN CLAVE: La llamada a initialize_app(cred) se hace aquí, 
+    # después de que 'cred' ha sido asignado en el bloque if/else.
+    if cred and not os.environ.get('FIREBASE_INITIALIZED'): # Evita doble inicialización en Flask
+        initialize_app(cred)
+        os.environ['FIREBASE_INITIALIZED'] = 'True' # Marca como inicializado
+        print("[INFO] Firebase inicializado con éxito.")
+        
+    init_db(app) # Vincula la instancia 'db' a 'app'
 
     # 3. Lógica para la creación de tablas (SOLUCIÓN PARA RENDER)
     if init_db_tables:
         # Asegura la importación del modelo dentro del contexto o justo antes
-        from .database.models import Usuario # Asegúrate que la ruta relativa sea correcta
+        from .database.models import Usuario 
         
         with app.app_context():
             print("[INFO] Creando tablas desde la función create_app...")
