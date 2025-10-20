@@ -1,33 +1,18 @@
 # init_db.py
+# (Ubicado en la raíz del proyecto)
 
-# 1. Importa la función de la app y la DB usando las rutas del run.py
-from Backend.src import create_app 
-from Backend.src.database.db_setup import db 
-
-# 2. 🔥 Importa explícitamente el modelo. ¡Esta importación es CRUCIAL!
-from Backend.src.database.models import Usuario 
+# 1. Importa la función de la app.
+from Backend.src import create_app
 
 # ----------------------------------------------------------------------
         
-print("Iniciando la creación/verificación de tablas...")
+print("Iniciando la creación/verificación de tablas DENTRO de la app...")
 
-# 3. Crea la instancia de la aplicación
-app = create_app()
+# 2. 🔥 SOLUCIÓN FINAL: Llama a create_app, pasándole el flag para que ejecute db.create_all() internamente.
+# Ya no necesitamos importar 'db' ni los modelos directamente aquí.
+app = create_app(init_db=True) 
 
-# 4. 🔥 SOLUCIÓN FINAL: Usa la configuración que genera el error de doble registro.
-# Este error solo ocurre en el entorno local. En Render, por la forma en que 
-# se importan los módulos, ESTA LÍNEA ES NECESARIA para que 'db' se registre 
-# en la 'app' del script de inicialización.
-try:
-    db.init_app(app)
-except RuntimeError as e:
-    # Si da el error de 'ya registrado', lo ignoramos y continuamos
-    if "has already been registered" in str(e):
-        print("db ya estaba vinculado (Ignorando RuntimeError)...")
-    else:
-        raise # Si es otro error, lo mostramos
+print("Base de datos inicializada o tablas verificadas exitosamente. ¡Servidor listo!")
 
-with app.app_context():
-    # 5. Crea las tablas
-    db.create_all()
-    print("Base de datos inicializada o tablas verificadas exitosamente. ¡Servidor listo!")
+# No se necesita el bloque 'with app.app_context()' ni 'db.create_all()' aquí, 
+# ya que create_app() lo manejará.
