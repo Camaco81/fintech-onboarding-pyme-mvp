@@ -20,7 +20,11 @@ import {
 // 🔑 3. Importaciones de RxJS (Necesarias para from, firstValueFrom, switchMap)
 import { firstValueFrom, from, Observable, switchMap } from 'rxjs'; 
 
-// Asegúrate de que tu interfaz de usuario esté bien definida
+// 🚨 IMPORTANTE: En un proyecto real de Angular, usarías 'environment.prod.ts' aquí
+// Para simplificar, definimos la constante directamente.
+const API_BASE_URL = 'https://fintech-onboarding-pyme-mvp.onrender.com/api/v1';
+
+
 interface FlaskUser {
   email: string;
   // ... otros campos
@@ -33,13 +37,13 @@ interface FlaskUser {
 export class AuthService {
   
   // 🔑 Inyección usando 'inject' (Patrón Angular Standalone)
-  // El compilador busca tokens de inyección: Auth, Firestore y HttpClient tienen un valor inyectable.
   private auth: Auth = inject(Auth); 
-  private firestore: Firestore = inject(Firestore); // 🔑 CORRECCIÓN: Inyección de Firestore
+  private firestore: Firestore = inject(Firestore); 
   private http = inject(HttpClient);
   
-  // URL de tu API de Flask
-  private FLASK_URL = 'http://127.0.0.1:5000/api/v1/auth'; 
+  // 🟢 URL de tu API de Flask AJUSTADA a la de Render
+  private FLASK_BASE_URL = API_BASE_URL; 
+  private AUTH_URL = `${API_BASE_URL}/auth`;
   
   // =========================================================================
   // LOGIC FOR LOGIN
@@ -47,7 +51,6 @@ export class AuthService {
 
   async login(email: string, password: string): Promise<UserCredential> {
     try {
-      // Usa this.auth como primer argumento
       const userCredential = await signInWithEmailAndPassword(this.auth, email, password); 
       return userCredential;
     } catch (error) {
@@ -59,50 +62,46 @@ export class AuthService {
   // LOGIC FOR REGISTER (Llamada a Flask y Verificación de Email)
   // =========================================================================
   
- async callFlaskSetupUser(email: string, password: string, nombre: string, telefono: string): Promise<any> {
-    const FLASK_URL = 'http://127.0.0.1:5000/api/v1/auth/setup-user';
+  async callFlaskSetupUser(email: string, password: string, nombre: string, telefono: string): Promise<any> {
+    // 🟢 CORREGIDO: Usamos la URL de Producción
+    const FLASK_SETUP_USER_URL = `${this.AUTH_URL}/setup-user`; 
     
     try {
-        const response = await fetch(FLASK_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                email: email,
-                password: password,
-                nombre_completo: nombre, // Asegúrate de que el nombre del campo coincida con Flask
-                telefono: telefono
-            })
-        });
+      // 🟢 CORREGIDO: Usamos la nueva constante para el endpoint de producción
+      const response = await fetch(FLASK_SETUP_USER_URL, { 
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+          nombre_completo: nombre, 
+          telefono: telefono
+        })
+      });
 
-        const data = await response.json();
+      const data = await response.json();
 
-        // Si el código NO es 2xx (ej: 409 o 500), lanzamos el error con el mensaje de Flask
-        if (!response.ok) {
-            // data.mensaje viene del JSON de Flask (ej: {"mensaje": "El email ya está registrado..."})
-            const error = new Error(data.mensaje || 'Error desconocido del backend');
-            // Añadimos la respuesta completa como propiedad para un mejor manejo en el componente
-            (error as any).error = data; 
-            throw error;
-        }
+      if (!response.ok) {
+        const error = new Error(data.mensaje || 'Error desconocido del backend');
+        (error as any).error = data; 
+        throw error;
+      }
 
-        // Éxito (código 200 OK)
-        return data;
+      return data;
 
     } catch (error) {
-        // Relanza cualquier error de red o el error del backend
-        throw error;
+      throw error;
     }
-}
+  }
 
   // Métodos que faltaban en tu archivo:
   
   // -------------------------------------------------------------------------
-  // EJEMPLO: Funcionalidad de Firestore (Descomentando tus métodos)
+  // EJEMPLO: Funcionalidad de Firestore
   // -------------------------------------------------------------------------
 
-  // 🔑 CORRECCIÓN DE SINTAXIS (async/await, addDoc importado)
   async addData(collectionName: string, data: any) {
     try {
       const docRef = await addDoc(collection(this.firestore, collectionName), data);
@@ -114,7 +113,6 @@ export class AuthService {
     }
   }
 
-  // 🔑 CORRECCIÓN DE SINTAXIS (async/await, getDocs, collection importados)
   async getData(collectionName: string) {
     try {
       const snapshot = await getDocs(collection(this.firestore, collectionName));
@@ -126,27 +124,26 @@ export class AuthService {
   }
 
   // -------------------------------------------------------------------------
-  // EJEMPLO: Función Protegida (Implementación con RxJS y async/await)
+  // EJEMPLO: Función Protegida
   // -------------------------------------------------------------------------
 
-  // 🔑 CORRECCIÓN DE SINTAXIS Y TIPADO (Observable importado, Auth inyectado)
   async testProtectedRoute(): Promise<Observable<any>> {
-    const user: User | null = await this.auth.currentUser; // Obtiene el usuario actual
+    const user: User | null = await this.auth.currentUser; 
     
-    if (!user) { // 🔑 CORRECCIÓN: Sintaxis y manejo de nulo
-      // Si no hay usuario, retorna un observable con un error o un valor de acceso denegado.
+    if (!user) { 
       return new Observable(observer => {
         observer.error({ status: 401, message: 'Acceso Denegado' });
         observer.complete();
       });
     }
 
-    const token = await user.getIdToken(true); // Obtiene token fresco
+    const token = await user.getIdToken(true); 
     
     const headers = { 'Authorization': `Bearer ${token}` };
-    const url = `${this.FLASK_URL}/test-pyme-access`;
     
-    // Retorna el Observable de la llamada HTTP
+    // 🟢 CORREGIDO: Usamos la URL de Producción
+    const url = `${this.AUTH_URL}/test-pyme-access`;
+    
     return this.http.get(url, { headers: headers });
   }
 
