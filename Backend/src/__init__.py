@@ -6,6 +6,7 @@ from config import Config
 # 🚨 NECESITAS importar 'db' para el db.create_all() interno
 from src.database.db_setup import init_db, db 
 from flask_cors import CORS
+from firebase_admin import credentials, initialize_app
 
 # ... (otras importaciones y código de Firebase) ...
 
