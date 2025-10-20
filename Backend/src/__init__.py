@@ -1,62 +1,39 @@
-# src/__init__.py (VERSIÓN CORREGIDA Y FUNCIONAL)
+# Backend/src/__init__.py
 
 import os
 from flask import Flask
 from config import Config
-from src.database.db_setup import init_db
+# Asumo que esta función init_db IMPORTA la instancia 'db' y la vincula
+from src.database.db_setup import init_db, db # 🚨 NECESITAS EXPORTAR/IMPORTAR 'db' AQUÍ
 from flask_cors import CORS
 
 # Importaciones adicionales necesarias
-import json
-import base64
+# ... (otras imports)
+# ---------------------------------------------------------------
 
-# 🚨 CORRECCIÓN CLAVE: Importar el Blueprint desde el paquete 'auth',
-# donde está definido en el __init__.py interno.
-from .auth import auth_bp
-
-# Importaciones de Firebase
-from firebase_admin import credentials, initialize_app
-
-def create_app(config_class=Config):
+# Asegúrate de que init_db se actualice para aceptar este flag
+def create_app(config_class=Config, init_db_tables=False): # Añadir el nuevo flag
     app = Flask(__name__)
     app.config.from_object(config_class)
     CORS(app)
 
-    # 1. Obtener la variable de credenciales Base64 ANTES del IF
-    base64_json_string = os.getenv('FIREBASE_CREDENTIALS_BASE64')
-
-    # 2. Lógica de inicialización de Firebase con doble verificación
+    # ... (Tu lógica de Firebase, que se ve correcta) ...
     # ---------------------------------------------------------------
-    if base64_json_string:
-        print("[INFO] Usando credenciales decodificadas de Render (Producción).")
-
-        # A. Decodificar Base64 a bytes
-        json_bytes = base64.b64decode(base64_json_string)
-
-        # B. Decodificar bytes a una cadena JSON y luego cargar el objeto Python
-        json_content = json_bytes.decode('utf-8')
-        service_account_info = json.loads(json_content)
-
-        # C. Inicializar usando el objeto Python decodificado
-        cred = credentials.Certificate(service_account_info)
-
-    else:
-        # 2. Fallback al archivo local (Desarrollo)
-        local_path = os.getenv('FIREBASE_CREDENTIALS_PATH')
-        if not local_path:
-            raise EnvironmentError("Falta la variable FIREBASE_CREDENTIALS_PATH en el entorno local (.env).")
-
-        print(f"[INFO] Usando archivo local de credenciales: {local_path}")
-        cred = credentials.Certificate(local_path)
-
-    # Inicializar Firebase con la credencial obtenida (ya sea local o de Render)
-    initialize_app(cred)
-    init_db(app)
+    # ... inicialización de Firebase y
+    init_db(app) # <--- Vincula la instancia 'db' a 'app'
     # ---------------------------------------------------------------
+
+    # Lógica para la creación de tablas (SOLUCIÓN PARA RENDER)
+    if init_db_tables:
+        from .database.models import Usuario # Asegura que el modelo esté cargado
+        
+        with app.app_context():
+            print("[INFO] Creando tablas desde la función create_app...")
+            # Aquí usamos el 'db' que fue vinculado por init_db(app)
+            db.create_all() 
+            print("[INFO] Tablas creadas exitosamente.")
 
     # 3. Registrar Blueprints (Módulos)
     app.register_blueprint(auth_bp, url_prefix='/api/v1/auth')
-
-    # ... (tu código de make_shell_context o CORS, si lo tienes) ...
 
     return app
