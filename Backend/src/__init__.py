@@ -18,26 +18,30 @@ def create_app(config_class=Config):
     app.config.from_object(config_class)
     CORS(app)
 
-    # 1. Inicializar Firebase Admin SDK
-    try:
-        # Obtiene la ruta absoluta del directorio donde está __init__.py (Backend/src)
-        ruta_actual = os.path.abspath(os.path.dirname(__file__))
+   if base64_json_string:
+        print("[INFO] Usando credenciales decodificadas de Render (Producción).")
         
-        # 🚨 CÁLCULO DE RUTA: Sube un nivel (..) y entra a 'credentials'
-        ruta_credenciales = os.path.join(ruta_actual, '..', 'credentials', 'firebase-admin-sdk-1.json')
+        # A. Decodificar Base64 a bytes
+        json_bytes = base64.b64decode(base64_json_string)
         
-        print(f"\n[INFO] Ruta de credenciales probada: {ruta_credenciales}")
+        # B. Decodificar bytes a una cadena JSON y luego cargar el objeto Python
+        json_content = json_bytes.decode('utf-8')
+        service_account_info = json.loads(json_content)
         
-        cred = credentials.Certificate(ruta_credenciales)
-        initialize_app(cred)
-        print("[INFO] Firebase Admin SDK inicializado con éxito.")
-
-    except Exception as e:
-        print(f"\n[ERROR FATAL] Falló la inicialización de Firebase Admin SDK. Detalle: {e}")
-        # Si la inicialización falla, levantamos la excepción.
-        raise 
-    
-    # 2. Inicializar Base de Datos (Neon DB)
+        # C. Inicializar usando el objeto Python decodificado
+        cred = credentials.Certificate(service_account_info)
+        
+    else:
+        # 2. Fallback al archivo local (Desarrollo)
+        local_path = os.getenv('FIREBASE_CREDENTIALS_PATH')
+        if not local_path:
+            raise EnvironmentError("Falta la variable FIREBASE_CREDENTIALS_PATH en el entorno local (.env).")
+            
+        print(f"[INFO] Usando archivo local de credenciales: {local_path}")
+        cred = credentials.Certificate(local_path)
+            
+    # Inicializar Firebase con la credencial obtenida (ya sea local o de Render)
+    initialize_app(cred)
     init_db(app)
 
     # 3. Registrar Blueprints (Módulos)
