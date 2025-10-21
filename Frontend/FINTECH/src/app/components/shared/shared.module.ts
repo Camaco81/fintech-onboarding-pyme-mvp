@@ -21,7 +21,8 @@ import { FooterComponent } from './footer/footer.component';
     ],
     exports: [
         
-        CommonModule, 
+        CommonModule,
+        NavbarComponent
         
     ]
 })

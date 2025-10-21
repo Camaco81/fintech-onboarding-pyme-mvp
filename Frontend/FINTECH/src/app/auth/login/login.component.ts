@@ -5,9 +5,12 @@ import { ReactiveFormsModule, FormGroup, FormControl, Validators, FormBuilder } 
 import { CommonModule } from '@angular/common';
 
 import { LoginService } from '../../services/login.service';
+import { SharedModule } from '../../components/shared/shared.module';
+import { user } from '@angular/fire/auth';
+import { UserStatus } from '../../interfaces';
 @Component({
   selector: 'app-login',
-  imports: [RouterOutlet,ReactiveFormsModule, CommonModule],
+  imports: [RouterOutlet,ReactiveFormsModule, CommonModule,SharedModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
@@ -31,10 +34,12 @@ export class LoginComponent {
     // private fb : FormBuilder,
     ){ }
 
-    login(){
+     async login(){
       const {email, password} = this.loginForm.value;
-      this.loginService.login(email, password).subscribe( res => {
+      const observable = await this.loginService.login(email, password);
+      observable.subscribe( (_: any)  => {
         console.log(this.loginForm.value);
+        this.loginForm.reset();
       });
     }
   

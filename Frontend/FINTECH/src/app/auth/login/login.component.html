@@ -1,3 +1,4 @@
+
 <div class="flex flex-col items-center justify-center min-h-screen  bg-white">
     <h1 class="text-center text-5xl font-bold mb-5">Inicio sesión </h1>
     <p class="text-center mb-5 text-blue-500" >Accede a tu cuenta para continuar</p>
@@ -8,22 +9,22 @@
             <input type="email" 
             formControlName="email"
             
-             placeholder="Correo electrónico" 
-             class="form-control w-full px-4 py-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"/>
-            <span class="text-sm text-red-500" 
-            *ngIf="loginForm.controls['email']?.invalid && loginForm.controls['email']?.touched">
-                Ingresa un correo electrónico válido.
-            </span>
-            </div>
+            placeholder="Correo electrónico" 
+            class="form-control w-full px-4 py-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+                <span class="text-sm text-red-500" 
+                    *ngIf="loginForm.controls['email']?.invalid && loginForm.controls['email']?.touched">
+                    Ingresa un correo electrónico válido.
+                </span>
+        </div>
         <div class="mb-4">
             <input type="password" 
             formControlName="password"
             placeholder="Contraseña" 
             class="form-control w-full px-3 py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"/>
-               <span class="text-sm text-red-500" 
-            *ngIf="loginForm.controls['password']?.invalid && loginForm.controls['password']?.touched">
-                Verifica tu contraseña (mínimo 6 caracteres).
-            </span>
+                <span class="text-sm text-red-500" 
+                    *ngIf="loginForm.controls['password']?.invalid && loginForm.controls['password']?.touched">
+                    Verifica tu contraseña (mínimo 6 caracteres).
+                </span>
         </div>
         <div class="flex justify-between items-center mb-6">
             <label class="flex items-center text-gray-700">
