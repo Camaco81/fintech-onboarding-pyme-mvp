@@ -25,6 +25,8 @@ class Usuario(db.Model):
     
     # Email del usuario (Clave Única, NO NULA)
     email = db.Column(db.String(120), unique=True, nullable=False)
+
+    nombre_completo = db.Column(db.String(120), nullable=True) # Ajusta el tamaño y nullable según tu DB
     
     # Rol del usuario (Usamos el enum definido arriba)
     # Usamos native_enum=False para mejor compatibilidad con el soporte de ENUM de SQLAlchemy/PostgreSQL.
