@@ -5,6 +5,7 @@ from flask import Flask
 from config import Config
 from src.database.db_setup import init_db, db 
 from flask_cors import CORS
+from flask_jwt_extended import JWTManager
 
 # Importaciones de Firebase y utilidades necesarias
 import json
@@ -24,11 +25,12 @@ cloudinary.config(
   api_secret = os.environ.get('CLOUDINARY_API_SECRET'),
   secure = True # Es esencial usar HTTPS
 )
-
+jwt = JWTManager()
 
 def create_app(config_class=Config, init_db_tables=False):
     app = Flask(__name__)
     app.config.from_object(config_class)
+    jwt.init_app(app)
     CORS(app)
 
     # 1. Lógica para OBTENER las credenciales (cred)

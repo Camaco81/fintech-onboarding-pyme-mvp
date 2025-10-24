@@ -13,6 +13,8 @@ class Config:
     SQLALCHEMY_POOL_RECYCLE = 300 
     # Comprueba si la conexión está viva antes de usarla, recreándola si es necesario
     SQLALCHEMY_POOL_PRE_PING = True 
+    JWT_SECRET_KEY = "tu_clave_secreta_aqui" # Asegúrate de que esto también esté configurado (¡usa una variable de entorno!)
+    JWT_TOKEN_LOCATION = ["headers"]
     # ----------------------------------------------------------------------
     
     # ¡CRUCIAL! Cambiamos a 'prefer' para evitar el fallo de certificado/SSL local
