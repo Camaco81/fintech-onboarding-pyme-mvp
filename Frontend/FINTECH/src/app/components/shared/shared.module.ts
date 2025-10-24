@@ -16,13 +16,11 @@ import { FooterComponent } from './footer/footer.component';
         CommonModule,
         NavbarComponent,
         FooterComponent, 
-       
-        
-    ],
+     ],
     exports: [
         
         CommonModule,
-        NavbarComponent
+        NavbarComponent, 
         
     ]
 })

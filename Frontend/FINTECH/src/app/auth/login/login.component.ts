@@ -1,49 +1,88 @@
 import { Component, inject } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { ReactiveFormsModule, FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
+import { RouterOutlet, Router } from '@angular/router';
 
-import { CommonModule } from '@angular/common';
+import { CommonModule } from '@angular/common'; 
 
-import { LoginService } from '../../services/login.service';
-import { SharedModule } from '../../components/shared/shared.module';
-import { user } from '@angular/fire/auth';
-import { UserStatus } from '../../interfaces';
+import { ReactiveFormsModule, FormGroup, Validators, FormBuilder } from '@angular/forms'; 
+
+import { AuthService } from '../../services/auth.service';
+import { idToken, ProviderId, user, UserCredential } from '@angular/fire/auth';
+import { onLog } from '@angular/fire/app';
+
 @Component({
   selector: 'app-login',
-  imports: [RouterOutlet,ReactiveFormsModule, CommonModule,SharedModule],
+  standalone: true, 
+  imports: [
+    
+    ReactiveFormsModule,
+     CommonModule
+  ], 
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
 export class LoginComponent {
 
-  private fb = inject (FormBuilder);
-  public loginForm : FormGroup = this.fb.group({
+  
+  email: string = '';
+  password: string = '';
+  userData: any= null;
+  user : any = null;
+  name : string = '';
+  loginForm!: FormGroup;
 
-    email: new FormControl('email', [Validators.required, Validators.email]),
-    password: new FormControl('password', [Validators.required, Validators.minLength(6)])
+  // Uso de 'inject' para inyección moderna
+  private authService = inject(AuthService);
+  private fb = inject(FormBuilder); 
+  private router = inject(Router);
+  private userCredential!: UserCredential;
 
-  });
+  constructor() {
+    this.initializeForm(); 
+  }
 
-  email : string = '';
-  password : string = '';
-  id: string = '';
-
-    
-  constructor(
-    private loginService : LoginService, 
-    // private fb : FormBuilder,
-    ){ }
-
-     async login(){
-      const {email, password} = this.loginForm.value;
-      const observable = await this.loginService.login(email, password);
-      observable.subscribe( (_: any)  => {
-        console.log(this.loginForm.value);
-        this.loginForm.reset();
-      });
+  private initializeForm() {
+    this.loginForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]]
+    });
+  }
+  
+  // Función para manejar el envío del formulario
+  async login() {
+    if (this.loginForm.invalid) {
+      console.warn('⚠️ Formulario inválido. Mostrando errores de validación.');
+      this.loginForm.markAllAsTouched(); 
+      return; 
     }
-  
-  
+    
+    const { email, password } = this.loginForm.value;
 
+    try {
+      // Usamos los valores correctos del formulario
+      const credential: UserCredential = await this.authService.login(email, password); 
 
+      const firebaseUser = credential?.user ?? null;
+      const token = firebaseUser ? await firebaseUser.getIdToken() : null;
+
+      console.log(`✅ Login Exitoso para: ${email}`);
+      console.log('Datos del usuario (del servicio):', firebaseUser);
+      // console.log(this._tokenResponse.idToken);
+      
+      this.userData = firebaseUser ? {
+        uid: firebaseUser.uid,
+        name: firebaseUser.displayName,
+        email: firebaseUser.email,
+        token: token,
+        providerId: firebaseUser.providerId
+      } : null;
+
+      this.router.navigate(['/dashboard']); 
+
+    } catch (error) {
+      console.error('❌ Error al iniciar sesión:', error);
+      // Lógica de errores UI
+    }
+    
+    
+  }
 }

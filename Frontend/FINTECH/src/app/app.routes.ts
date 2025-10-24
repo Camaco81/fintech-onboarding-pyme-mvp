@@ -1,3 +1,5 @@
+// src/app/app.routes.ts
+
 import { Routes } from '@angular/router';
 import { DashboardComponent } from './components/pages/dashboard/dashboard.component';
 import { LoadingComponent } from './components/pages/loading/loading.component';
@@ -29,7 +31,15 @@ export const routes: Routes = [
    },
    {
       path: '**',
-      redirectTo: 'auth'
+      redirectTo: 'home'
 
    }
 ];
+
+export default routes;
+
+       
+        
+    
+    
+

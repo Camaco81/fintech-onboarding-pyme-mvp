@@ -2,8 +2,7 @@ import { Routes } from '@angular/router';
 import { AuthLayoutComponent } from '../auth/layout/auth-layout/auth-layout.component';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
-
-
+import { ProfileComponent } from './profile/profile.component';
 
 
 export const authRoutes: Routes = [
@@ -20,7 +19,12 @@ export const authRoutes: Routes = [
             component:RegisterComponent,
 
         },
+        {
+            path:'profile',
+            component : ProfileComponent,
+        },
         {path: '', redirectTo: 'login', pathMatch: 'full'}
+        
 
 
     ]

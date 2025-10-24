@@ -1,47 +1,89 @@
-<div class="flex flex-col items-center justify-center min-h-screen bg-white">
-    <h1 class="text-center text-5xl font-bold mb-5">Registrate</h1>
-   
-    <form class="w-full max-w-xs" ngIf="loginForm">
-        <div class="mb-4">
-            <input type="text"  id="nombre" placeholder="Nombre completo" class="form-control w-full px-4 py-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"/>
-            <span class="text-sm text-red-500" gIf="loginForm.controls['email']?.invalid && loginForm.controls['email']?.touched">
-                Ingresa tu nombre completo.
+<div class="flex items-center justify-center min-h-screen bg-gray-50">
+  <div class="bg-white p-8 rounded-2xl shadow-md w-full max-w-md">
+    <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">Crear Cuenta</h2>
+
+    <form #registerForm="ngForm" (ngSubmit)="onRegister(registerForm)">
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Nombre Completo</label>
+        <input 
+          type="text"
+          name="nombre"
+          [(ngModel)]="nombre"
+          required
+          class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500"
+        />
+            <span 
+                *ngIf="registerForm.form.controls['nombre']?.invalid && registerForm.form.controls['nombre']?.touched"
+                class="text-red-500 text-sm mt-1 block"
+                >
+                El nombre es obligatorio.
             </span>
-        
-        </div>
-        <div class="mb-4">
-            <input type="text"  id="email" placeholder="Correo electrónico" class="form-control w-full px-4 py-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"/>
-            <span class="text-sm text-red-500" gIf="loginForm.controls['email']?.invalid && loginForm.controls['email']?.touched">
-                Ingresa un correo electrónico válido.
+      </div>
+    
+
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Correo Electrónico</label>
+        <input 
+          type="email"
+          name="email"
+          [(ngModel)]="email"
+          required
+          class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500"
+        />
+        <span 
+                *ngIf="registerForm.form.controls['email']?.invalid && registerForm.form.controls['email']?.touched"
+                class="text-red-500 text-sm mt-1 block"
+                >
+                El correo electronico es obligatorio.
             </span>
-        
-        </div>
-        <div class="mb-4">
-            <input type="password" id="password" placeholder="Contraseña" class="form-control w-full px-3 py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"/>
-        <span class="text-sm text-red-500" gIf="loginForm.controls['email']?.invalid && loginForm.controls['email']?.touched">
-                Ingresa tu pasword.
+      </div>
+      
+
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
+        <input 
+          type="password"
+          name="password"
+          [(ngModel)]="password"
+          required
+          class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500"
+        />
+        <span 
+                *ngIf="registerForm.form.controls['password']?.invalid && registerForm.form.controls['password']?.touched"
+                class="text-red-500 text-sm mt-1 block"
+                >
+                El password es obligatorio.
             </span>
-        
-        </div>
-        <div class="mb-6">
-            <input type="number"  id="telefono" placeholder="Ingresa tu numero telefono" class="form-control w-full px-4 py-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"/>
-            <span class="text-sm text-red-500" gIf="loginForm.controls['email']?.invalid && loginForm.controls['email']?.touched">
-                Numero telefonico.
+      </div>
+
+      <div class="mb-6">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
+        <input 
+          type="text"
+          name="telefono"
+          [(ngModel)]="telefono"
+          required
+          class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500"
+        />
+        <span 
+                *ngIf="registerForm.form.controls['telefono']?.invalid && registerForm.form.controls['telefono']?.touched"
+                class="text-red-500 text-sm mt-1 block"
+                >
+                El telefono es obligatorio.
             </span>
-        
-        </div>
-        <div class="flex justify-between items-center mb-6">
-            <label class="flex items-center text-gray-700">
-                <!-- <input type="checkbox" class="mr-2 accent-blue-600"/>
-                Recordarme -->
-            </label>
-            <a href="#" class="text-sm text-blue-600 hover:underline">¿Olvidaste tu contraseña?</a>
-        </div>
-        <div class="flex justify-between items-center mb-6">
-            <a href="auth/login" class="text-sm flex items-center text-blue-600 hover:underline">Ya tienes cuenta.Inicia sesión</a>
-        </div>
-        <button type="submit" class="w-full py-3 bg-blue-700 text-white rounded hover:bg-blue-800 font-semibold text-base transition-colors">
-            Entrar
-        </button>
+      </div>
+
+      <button
+        type="submit"
+        [disabled]="loading || registerForm.invalid"
+        class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg transition"
+      >
+        {{ loading ? 'Registrando...' : 'Registrarse' }}
+      </button>
     </form>
+
+    <!-- Mensajes -->
+    <p *ngIf="successMessage" class="text-green-600 text-sm mt-4">{{ successMessage }}</p>
+    <p *ngIf="errorMessage" class="text-red-600 text-sm mt-4">{{ errorMessage }}</p>
+  </div>
 </div>

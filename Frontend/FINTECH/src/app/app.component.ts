@@ -1,7 +1,10 @@
 import { Component } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
-import { CommonModule } from '@angular/common';
 import { SharedModule } from './components/shared/shared.module';
+import { CommonModule } from '@angular/common';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatButtonModule } from '@angular/material/button';
+
 
 
 
@@ -9,7 +12,7 @@ import { SharedModule } from './components/shared/shared.module';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet,SharedModule ], 
+  imports: [RouterOutlet,  SharedModule,CommonModule, MatSnackBarModule, MatButtonModule], 
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

@@ -1,44 +1,48 @@
 
-<div class="flex flex-col items-center justify-center min-h-screen  bg-white">
+<div class="flex flex-col font-semibold items-center justify-center min-h-screen pb-32 bg-white">
     <h1 class="text-center text-5xl font-bold mb-5">Inicio sesión </h1>
-    <p class="text-center mb-5 text-blue-500" >Accede a tu cuenta para continuar</p>
+    <p class="text-center text-xl mb-5 text-blue-500" >Accede a tu cuenta para continuar</p>
     <form class="w-full max-w-xs" 
     autocomplete="off"   
     [formGroup]="loginForm" (ngSubmit)="login()">
-        <div class="mb-6">
+        <div class="mb-4 text-xl font-semibold">
             <input type="email" 
             formControlName="email"
             
             placeholder="Correo electrónico" 
             class="form-control w-full px-4 py-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"/>
-                <span class="text-sm text-red-500" 
+                <span class="text-lg text-red-500" 
                     *ngIf="loginForm.controls['email']?.invalid && loginForm.controls['email']?.touched">
                     Ingresa un correo electrónico válido.
                 </span>
         </div>
-        <div class="mb-4">
+        <div class="mb-4 text-xl font-semibold">
             <input type="password" 
             formControlName="password"
             placeholder="Contraseña" 
             class="form-control w-full px-3 py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"/>
-                <span class="text-sm text-red-500" 
+                <span class="text-lg text-red-500" 
                     *ngIf="loginForm.controls['password']?.invalid && loginForm.controls['password']?.touched">
                     Verifica tu contraseña (mínimo 6 caracteres).
                 </span>
         </div>
         <div class="flex justify-between items-center mb-6">
-            <label class="flex items-center text-gray-700">
-                <input type="checkbox" class="mr-2 accent-blue-600"/>
+            <label class="flex items-center text-gray-700 text-xl font-sans ">
+                <input type="checkbox" class="mr-4 accent-blue-600"/>
                 Recordarme
             </label>
-            <a href="#" class="text-sm text-blue-600 hover:underline">¿Olvidaste tu contraseña?</a>
+            
         </div>
         <div class="flex justify-between items-center mb-6">
-            <a href="auth/register" class="text-sm flex items-center text-blue-600 hover:underline">Aun no tienes cuenta?Registrate</a>
+            <a href="#" class=" text-xl font-sans text-blue-600 hover:underline ">¿Olvidaste tu contraseña?</a>
+        </div>
+
+        <div class="flex justify-between items-center mb-6">
+            <a href="auth/register" class="text-xl font-san flex items-center text-blue-400 hover:underline">Aun no tienes cuenta?Registrate</a>
         </div>
         <button type="submit" 
         [disabled]="loginForm.invalid"
-        class="w-full py-3 bg-blue-700 text-white rounded hover:bg-blue-800 font-semibold text-base transition-colors">
+        class="w-full py-3 bg-blue-700 text-lg text-white rounded hover:bg-blue-800 font-semibold  transition-colors">
             
         Entrar
         </button>
