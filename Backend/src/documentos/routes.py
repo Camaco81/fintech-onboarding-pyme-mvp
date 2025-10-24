@@ -4,7 +4,7 @@ from flask import Blueprint, request, jsonify
 from werkzeug.utils import secure_filename
 import cloudinary.uploader
 from ..database.models import Documento, db # Asegúrate de importar esto
-
+from ..utils.file_handlers import allowed_file
 documentos_bp = Blueprint('documentos', __name__, url_prefix='/api/v1/documentos')
 
 @documentos_bp.route('/upload', methods=['POST'])
