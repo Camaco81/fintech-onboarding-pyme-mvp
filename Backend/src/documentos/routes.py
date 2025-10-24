@@ -12,7 +12,7 @@ documentos_bp = Blueprint('documentos', __name__, url_prefix='/api/v1/documentos
 # @token_required 
 def upload_documento():
     # user = g.user  # Si usas g.user del decorador de token
-    user_id_ejemplo = 1 # Reemplaza esto con el ID real del usuario autenticado
+  user_id_actual = get_jwt_identity()
 
     if 'file' not in request.files:
         return jsonify({"error": "No se encontró la parte del archivo (key 'file')"}), 400
@@ -38,7 +38,7 @@ def upload_documento():
             nuevo_doc = Documento(
                 url_segura=upload_result['secure_url'],
                 nombre_original=nombre_original,
-                user_id=user_id_ejemplo 
+                user_id=user_id_actual 
             )
 
             db.session.add(nuevo_doc)
