@@ -13,6 +13,7 @@ from firebase_admin import credentials, initialize_app
 
 # Importar el Blueprint (asumo que esta ruta es correcta)
 from .auth import auth_bp 
+from .documentos import documentos_bp
 
 import cloudinary
 
@@ -78,5 +79,6 @@ def create_app(config_class=Config, init_db_tables=False):
 
     # 4. Registrar Blueprints (Módulos)
     app.register_blueprint(auth_bp, url_prefix='/api/v1/auth')
+    app.register_blueprint(documentos_bp)
 
     return app
