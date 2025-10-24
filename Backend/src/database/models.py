@@ -40,4 +40,20 @@ class Usuario(db.Model):
     def __repr__(self):
         return f"<Usuario {self.email} | Rol: {self.rol.value}>"
 
-# ¡No necesitas ejecutar este archivo! Solo lo importa Flask.
+# src/database/models.py
+
+class Documento(db.Model):
+    __tablename__ = 'documentos'
+    id = db.Column(db.Integer, primary_key=True)
+
+    # URL donde se puede acceder al documento subido en Cloudinary
+    url_segura = db.Column(db.String(500), nullable=False)
+
+    # Opcional: Nombre original del archivo para mostrar al usuario
+    nombre_original = db.Column(db.String(255), nullable=True)
+
+    # Relación con el usuario (Clave foránea)
+    user_id = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
+    usuario = db.relationship('Usuario', backref=db.backref('documentos', lazy=True))
+
+    fecha_subida = db.Column(db.DateTime, default=datetime.utcnow)

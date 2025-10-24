@@ -6,3 +6,5 @@ python-dotenv
 firebase-admin
 gunicorn
 Flask-JWT-Extended
+cloudinary
+Werkzeug

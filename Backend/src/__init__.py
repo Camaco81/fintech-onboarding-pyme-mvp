@@ -14,6 +14,16 @@ from firebase_admin import credentials, initialize_app
 # Importar el Blueprint (asumo que esta ruta es correcta)
 from .auth import auth_bp 
 
+import cloudinary
+
+# NOTA: Reemplaza con tus variables de entorno (.env)
+cloudinary.config( 
+  cloud_name = os.environ.get('CLOUDINARY_CLOUD_NAME'), 
+  api_key = os.environ.get('CLOUDINARY_API_KEY'), 
+  api_secret = os.environ.get('CLOUDINARY_API_SECRET'),
+  secure = True # Es esencial usar HTTPS
+)
+
 
 def create_app(config_class=Config, init_db_tables=False):
     app = Flask(__name__)
