@@ -87,33 +87,49 @@ def setup_user():
         return jsonify({"mensaje": f"Error interno desconocido. Contacte a soporte."}), 500
 
 
+# src/auth/routes.py (VERSIÓN FINAL CORREGIDA)
+
+# ... (Imports) ...
+
 # ---------------------------------------------------------------
-# RUTA DE PERFIL DE USUARIO LOGEADO
+# RUTA DE PERFIL DE USUARIO LOGEADO (Verifica Token de Firebase)
 # ---------------------------------------------------------------
 @auth_bp.route('/profile', methods=['GET'])
-@jwt_required() 
 def get_user_profile():
-    # 1. Obtener la identidad del usuario (que es el ID de la DB)
-    user_id = get_jwt_identity() 
+    # 1. Obtener el Token del Header de Autorización
+    auth_header = request.headers.get('Authorization')
+    if not auth_header or not auth_header.startswith('Bearer '):
+        return jsonify({"msg": "Autorización requerida. Falta el token Bearer de Firebase."}), 401
     
-    # 2. Buscar el usuario en la base de datos (Método moderno)
-    # Si no lo encuentra, automáticamente devuelve un 404.
-    # Usamos user_id directamente porque en tu lógica de login, el subject es el ID de la DB.
-    user = db.get_or_404(Usuario, user_id, description="Usuario no encontrado en la base de datos.")
+    id_token = auth_header.split(' ')[1]
     
-    # 3. Preparar la respuesta JSON (serialización)
+    try:
+        # 2. Verificar el ID Token con el SDK de Firebase
+        decoded_token = auth.verify_id_token(id_token)
+        firebase_uid = decoded_token['uid'] # <-- ESTE ES EL UID QUE USAMOS PARA BUSCAR
+        
+    except Exception as e:
+        return jsonify({"msg": f"Token de Firebase inválido o expirado. Detalle: {e}"}), 401
+
+    # 3. 🔑 CORRECCIÓN CRÍTICA: Buscar usando el campo 'firebase_uid' de la tabla, 
+    #    NO el campo 'id' (bigserial).
+    user = db.session.execute(
+        # Filtramos por la columna que almacena el UID de Firebase
+        db.select(Usuario).filter_by(firebase_uid=firebase_uid) 
+    ).scalar_one_or_none()
     
-    # NOTA: Si user.fecha_creacion es un objeto datetime, .isoformat() funciona bien, 
-    # pero si es None, fallaría. El get_or_404 asegura que 'user' no es None.
-    # El usuario de Firebase (firebase_uid) no se expone a menos que sea necesario.
+    if user is None:
+        # Esto ocurre si el usuario está en Firebase pero la inserción en Neon falló.
+        return jsonify({"msg": "Usuario no encontrado en la base de datos."}), 404
     
+    # 4. Preparar la respuesta JSON (incluimos el UID de Firebase explícitamente)
     return jsonify({
-        "id": user.id,
+        # id de Neon (bigserial)
+        "db_id": user.id, 
+        # ID de Firebase (clave de login)
+        "firebase_uid": user.firebase_uid, 
         "email": user.email,
         "nombre_completo": user.nombre_completo, 
         "rol": user.rol,
-        # Si 'fecha_creacion' puede ser None, mantenemos la verificación.
         "fecha_creacion": user.fecha_creacion.isoformat() if user.fecha_creacion else None,
-        # Asumiendo que tu modelo Usuario no tiene 'email_verificado'
-        # Si lo tiene, puedes incluirlo: "email_verificado": user.email_verificado
     }), 200
