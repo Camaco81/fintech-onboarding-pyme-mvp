@@ -130,6 +130,6 @@ def get_user_profile():
         "firebase_uid": user.firebase_uid, 
         "email": user.email,
         "nombre_completo": user.nombre_completo, 
-        "rol": user.rol,
+        "rol": user.rol.value,
         "fecha_creacion": user.fecha_creacion.isoformat() if user.fecha_creacion else None,
     }), 200
