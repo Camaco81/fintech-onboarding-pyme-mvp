@@ -13,7 +13,7 @@ from firebase_admin import credentials, initialize_app
 
 # Importar el Blueprint (asumo que esta ruta es correcta)
 from .auth import auth_bp 
-from .documentos import documentos_bp
+from .documentos.routes import documentos_bp
 
 import cloudinary
 
