@@ -3,6 +3,7 @@
 import enum
 from datetime import datetime
 from .db_setup import db # Importamos la instancia 'db' de SQLAlchemy
+from sqlalchemy.dialects.postgresql import JSONB
 
 # 1. Definición del Enumerado de Roles
 # Usamos un enum para asegurar que los roles solo sean valores predefinidos.
@@ -57,3 +58,24 @@ class Documento(db.Model):
     usuario = db.relationship('Usuario', backref=db.backref('documentos', lazy=True))
 
     fecha_subida = db.Column(db.DateTime, default=datetime.utcnow)
+
+class ProgresoFormulario(db.Model):
+    __tablename__ = 'progreso_formulario'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
+    paso_clave = db.Column(db.String(100), nullable=False)
+    
+    # El tipo de datos que coincidirá con JSONB en PostgreSQL
+    datos = db.Column(JSONB, nullable=False, default={}) 
+    
+    fecha_creacion = db.Column(db.DateTime, default=db.func.now())
+    fecha_actualizacion = db.Column(db.DateTime, default=db.func.now(), onupdate=db.func.now())
+
+    __table_args__ = (db.UniqueConstraint('user_id', 'paso_clave', name='_user_paso_uc'),)
+    
+    # Define la relación con el Usuario
+    usuario = db.relationship('Usuario', backref=db.backref('progresos', lazy=True))
+    
+    def __repr__(self):
+        return f"<ProgresoFormulario {self.user_id} - {self.paso_clave}>"
