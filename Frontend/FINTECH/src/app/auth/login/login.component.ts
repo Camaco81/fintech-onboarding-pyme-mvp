@@ -82,16 +82,20 @@ export class LoginComponent {
       const firebaseUser = credential?.user ?? null;
       const token = firebaseUser ? await firebaseUser.getIdToken() : null;
 
-      if (!firebaseUser) {
-        this.snackBar.open('❌ No se pudo obtener la información del usuario.', 'Cerrar', {
-          duration: 5000,
-          panelClass: ['snack-error']
+      const showSnack = (message: string, isError = false) => {
+        this.snackBar.open(message, 'Cerrar', {
+          duration: 4000,
+          horizontalPosition: 'right',
+          verticalPosition: 'top',
+          panelClass: isError ? ['snackbar-error'] : ['snackbar-success'],
         });
+      };
+      if (!firebaseUser) {
+        showSnack('❌ No se pudo obtener la información del usuario.', true);
         return;
       }
 
       
-
       console.log(`✅ Login Exitoso para: ${email}`);
       console.log('Datos del usuario (del servicio):', firebaseUser);
 
@@ -107,11 +111,7 @@ export class LoginComponent {
 
         console.log('Datos del usuario procesados:', firebaseUser.displayName);
 
-      // Mostrar éxito con MatSnackBar
-      this.snackBar.open('Inicio de sesión exitoso', 'Cerrar', {
-        duration: 3000,
-        panelClass: ['snack-success']
-      });
+      
 
       this.router.navigate(['/dashboard']);
     } catch (error) {
@@ -119,13 +119,8 @@ export class LoginComponent {
 
       const message = (error as any)?.message ?? 'Ocurrió un error al iniciar sesión';
 
-      // Mostrar error con MatSnackBar
-      this.snackBar.open(`Error: ${message}`, 'Cerrar', {
-        duration: 5000,
-        panelClass: ['snack-error']
-      });
-
-      // Lógica de errores UI adicional si se requiere
+      
+      
     }
   }
 
