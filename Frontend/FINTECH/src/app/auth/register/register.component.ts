@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Form, FormBuilder, FormGroup, FormsModule, NgForm, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service'; // ajusta la ruta según tu estructura
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-register',
@@ -22,7 +23,8 @@ export class RegisterComponent {
   errorMessage = '';
 
   constructor(private authService: AuthService,
-              private fb: FormBuilder
+              private fb: FormBuilder,
+              private snackBar: MatSnackBar
   ) {
     this.registerForm = this.fb.group({
       nombre: ['', Validators.required],
@@ -46,6 +48,26 @@ export class RegisterComponent {
         this.telefono
       );
       
+      
+      const showSnack = (message: string, isError = false) => {
+        this.snackBar.open(message, 'Cerrar', {
+          duration: 4000,
+          horizontalPosition: 'right',
+          verticalPosition: 'top',
+          panelClass: isError ? ['snackbar-error'] : ['snackbar-success'],
+        });
+      };
+
+      if (result?.error || result?.ok === false) {
+        const msg = result?.mensaje || '❌ Error al registrar el usuario.';
+        this.errorMessage = msg;
+        showSnack(msg, true);
+      } else {
+        this.idToken = result?.idToken || result?.token || '';
+        const msg = result?.mensaje || '✅ Registro exitoso. Revisa tu correo.';
+        this.successMessage = msg;
+        showSnack(msg, false);
+      }
       this.successMessage = result?.mensaje || '✅ Registro exitoso. Revisa tu correo.';
       this.logResponse();
       form.resetForm();
@@ -67,4 +89,6 @@ export class RegisterComponent {
       console.log('Mensaje de error:', this.errorMessage);
       console.log('Cargando:', this.loading);
   }
+
+  
 }
