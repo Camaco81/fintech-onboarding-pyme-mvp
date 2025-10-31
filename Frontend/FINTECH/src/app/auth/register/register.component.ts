@@ -2,12 +2,15 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Form, FormBuilder, FormGroup, FormsModule, NgForm, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service'; // ajusta la ruta según tu estructura
+import { SwalComponent, SwalDirective } from "@sweetalert2/ngx-sweetalert2";
 import { MatSnackBar } from '@angular/material/snack-bar';
+
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, SwalComponent, SwalDirective],
   templateUrl: './register.component.html',
 })
 export class RegisterComponent {
@@ -24,8 +27,13 @@ export class RegisterComponent {
 
   constructor(private authService: AuthService,
               private fb: FormBuilder,
-              private snackBar: MatSnackBar
+              private snackBar: MatSnackBar,
+             
   ) {
+
+    Swal;
+
+    console.log('SnackBar injectado correctamente ✅', this.snackBar);
     this.registerForm = this.fb.group({
       nombre: ['', Validators.required],
     });
@@ -48,8 +56,7 @@ export class RegisterComponent {
         this.telefono
       );
       
-      
-      const showSnack = (message: string, isError = false) => {
+       const showSnack = (message: string, isError = false) => {
         this.snackBar.open(message, 'Cerrar', {
           duration: 4000,
           horizontalPosition: 'right',
@@ -58,19 +65,17 @@ export class RegisterComponent {
         });
       };
 
-      if (result?.error || result?.ok === false) {
-        const msg = result?.mensaje || '❌ Error al registrar el usuario.';
-        this.errorMessage = msg;
-        showSnack(msg, true);
-      } else {
-        this.idToken = result?.idToken || result?.token || '';
-        const msg = result?.mensaje || '✅ Registro exitoso. Revisa tu correo.';
-        this.successMessage = msg;
-        showSnack(msg, false);
+      if (result && result.idToken){
+        this.snackBar.open('✅ Usuario registrado con éxito.', 'Cerrar', {
+          duration: 4000,
+          horizontalPosition: 'right',
+          verticalPosition: 'top',
+          panelClass: ['snackbar-success'],
+        });
+        this.successMessage = '✅ Usuario registrado con éxito.';
+        this.idToken = result.idToken;
+        showSnack(this.successMessage);
       }
-      this.successMessage = result?.mensaje || '✅ Registro exitoso. Revisa tu correo.';
-      this.logResponse();
-      form.resetForm();
 
     } catch (error: any) {
       this.errorMessage = error?.error?.mensaje || '❌ Error al registrar el usuario.';

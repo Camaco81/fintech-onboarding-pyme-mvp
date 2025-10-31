@@ -1,0 +1,43 @@
+<div class="flex justify-center items-center min-h-screen bg-gray-50">
+  <div class="bg-white p-6 rounded-2xl shadow-md w-full max-w-md">
+    <h2 class="text-xl font-bold mb-4 text-center">💵 Registrar Ingreso</h2>
+
+    <form [formGroup]="incomeForm" (ngSubmit)="registrarIngreso()">
+
+      <div class="mb-4">
+        <label class="block font-medium mb-1">Descripción</label>
+        <input formControlName="descripcion" type="text" class="w-full border p-2 rounded" placeholder="Ej: Venta de producto" />
+      </div>
+
+      <div class="mb-4">
+        <label class="block font-medium mb-1">Monto</label>
+        <input formControlName="monto" type="number" class="w-full border p-2 rounded" placeholder="Ej: 50000" />
+      </div>
+
+      <div class="mb-4">
+        <label class="block font-medium mb-1">Categoría</label>
+        <select formControlName="categoria" class="w-full border p-2 rounded">
+          <option value="" disabled selected>Seleccionar categoría</option>
+          <option value="venta">Venta</option>
+          <option value="servicio">Servicio</option>
+          <option value="otros">Otros</option>
+        </select>
+      </div>
+
+      <div class="mb-4">
+        <label class="block font-medium mb-1">Fecha</label>
+        <input formControlName="fecha" type="date" class="w-full border p-2 rounded" />
+      </div>
+
+      <button 
+        type="submit" 
+        [disabled]="incomeForm.invalid || loading"
+        class="bg-green-600 text-white font-bold py-2 px-4 rounded w-full hover:bg-green-700 transition">
+        {{ loading ? 'Guardando...' : 'Registrar Ingreso' }}
+      </button>
+    </form>
+
+    <p *ngIf="successMessage" class="text-green-600 mt-3 text-center">{{ successMessage }}</p>
+    <p *ngIf="errorMessage" class="text-red-600 mt-3 text-center">{{ errorMessage }}</p>
+  </div>
+</div>

@@ -102,14 +102,14 @@ export class LoginComponent {
       this.userData = firebaseUser
         ? {
             uid: firebaseUser.uid,
-            name: firebaseUser.displayName,
+            name: firebaseUser.displayName  || 'Usuario sin nombre',
             email: firebaseUser.email,
             token: token,
             providerId: firebaseUser.providerId
           }
         : null;
 
-        console.log('Datos del usuario procesados:', firebaseUser.displayName);
+        console.log('Datos del usuario procesados:', this.userData.name);
 
       
 

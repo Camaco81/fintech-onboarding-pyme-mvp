@@ -1,73 +1,29 @@
-<body class="bg-background-light dark:bg-background-dark font-display text-gray-800 dark:text-gray-200">
-<div class="flex flex-col min-h-screen">
+<main class="container mx-auto p-6">
+  <h2 class="text-2xl font-bold mb-4">Bienvenido, {{ userEmail }}</h2>
+  <p class="text-gray-600 mb-6"></p>
 
-<main class="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-8">
-<h2 class="text-3xl font-bold text-gray-900 dark:text-white">Welcome back, Sarah</h2>
-<button class="flex items-center justify-center gap-2 px-5 py-3 bg-blue-800 text-white font-semibold rounded-lg shadow-md hover:bg-blue-500 transition-colors">
-<span class="material-symbols-outlined">add</span>
-                    New Loan Application
-                </button>
+  <h3 class="text-xl font-semibold mb-3">Tus ingresos</h3>
+
+<div class="mb-4 flex items-center justify-between">
+    <div *ngIf="!ingresos?.length" class="text-gray-500">
+        No hay ingresos registrados.
+    </div>
+    <button
+        class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded shadow"
+        routerLink="/income"
+        aria-label="Crear nuevo ingreso">
+        Nuevo ingreso
+    </button>
 </div>
-<div class="mb-8">
-<div class="bg-white dark:bg-gray-900/50 rounded-xl shadow-sm p-6 flex flex-col md:flex-row items-center gap-6">
-<div class="flex-1">
-<p class="text-sm font-medium text-gray-500 dark:text-gray-400">Current Application Status</p>
-<p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">Pending Review</p>
-<p class="text-gray-600 dark:text-gray-300 mt-2">Your application is currently under review. We'll notify you once it's processed.</p>
-<button class="mt-4 text-blue-600 font-semibold text-sm hover:underline">
-                            View Details
-                        </button>
-</div>
-<div class="w-full md:w-auto">
-<div class="flex items-center justify-center bg-blue-100 dark:bg-blue-900/30 text-primary p-4 rounded-full">
-<span class="material-symbols-outlined text-4xl">hourglass_top</span>
-</div>
-</div>
-</div>
-</div>
-<div>
-<h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Application History</h3>
-<div class="bg-white dark:bg-gray-900/50 rounded-xl shadow-sm overflow-hidden">
-<div class="overflow-x-auto">
-<table class="w-full text-left">
-<thead class="bg-gray-50 dark:bg-gray-800/50">
-<tr>
-<th class="p-4 text-sm font-semibold text-gray-600 dark:text-gray-300">Application ID</th>
-<th class="p-4 text-sm font-semibold text-gray-600 dark:text-gray-300">Date</th>
-<th class="p-4 text-sm font-semibold text-gray-600 dark:text-gray-300">Amount</th>
-<th class="p-4 text-sm font-semibold text-gray-600 dark:text-gray-300">Status</th>
-</tr>
-</thead>
-<tbody class="divide-y divide-gray-200 dark:divide-gray-800">
-<tr>
-<td class="p-4 text-gray-700 dark:text-gray-300 font-medium">#12345</td>
-<td class="p-4 text-gray-500 dark:text-gray-400">2023-08-15</td>
-<td class="p-4 text-gray-500 dark:text-gray-400">$50,000</td>
-<td class="p-4">
-<span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300">
-<span class="material-symbols-outlined mr-1.5 text-base">check_circle</span>
-                                            Approved
-                                        </span>
-</td>
-</tr>
-<tr>
-<td class="p-4 text-gray-700 dark:text-gray-300 font-medium">#67890</td>
-<td class="p-4 text-gray-500 dark:text-gray-400">2023-07-20</td>
-<td class="p-4 text-gray-500 dark:text-gray-400">$25,000</td>
-<td class="p-4">
-<span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-300">
-<span class="material-symbols-outlined mr-1.5 text-base">cancel</span>
-                                            Rejected
-                                        </span>
-</td>
-</tr>
-<tr>
-<td class="p-4 text-gray-700 dark:text-gray-300 font-medium">#11223</td>
-<td class="p-4 text-gray-500 dark:text-gray-400">2023-06-05</td>
-<td class="p-4 text-gray-500 dark:text-gray-400">$100,000</td>
-<td class="p-4">
-<span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300">
-<span class="material-symbols-outlined mr-1.5 text-base">check_circle</span>
-                                            Approved
-                                        </span>
+<!-- (click)="crearIngreso(addIngreso)" va en la linea 13 -->
+  <ul *ngIf="ingresos?.length" class="space-y-3">
+    <li *ngFor="let ingreso of ingresos" class="p-4 bg-white rounded-lg shadow">
+      <div class="flex justify-between">
+        <span class="font-medium">{{ ingreso.descripcion }}</span>
+        <span class="text-green-600 font-semibold">${{ ingreso.monto }}</span>
+      </div>
+      <div class="text-sm text-gray-500">{{ ingreso.fecha | date }}</div>
+      <div class="text-xs text-gray-400">Categoría: {{ ingreso.categoria }}</div>
+    </li>
+  </ul>
+</main>

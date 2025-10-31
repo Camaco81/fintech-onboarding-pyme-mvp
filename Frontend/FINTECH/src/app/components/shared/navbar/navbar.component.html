@@ -12,7 +12,7 @@
                 </svg>
             </button>
             @if (authService.authStatus() === true) {
-                <button class="btn btn-ghost">
+                <button class="btn btn-dark btn-sm">
                     {{authService.getCurrentUser()?.displayName}}
                 </button>
                 <button class="btn btn-sm btn-error">

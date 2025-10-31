@@ -10,6 +10,7 @@ import { getAuth, provideAuth } from '@angular/fire/auth';
 // 2. Importa tus configuraciones (del environment)
 import { environment } from '../enviroments/enviroments';
 
+
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),

@@ -3,6 +3,8 @@ import { AuthLayoutComponent } from '../auth/layout/auth-layout/auth-layout.comp
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { ProfileComponent } from './profile/profile.component';
+import { importProvidersFrom } from '@angular/core';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 
 export const authRoutes: Routes = [
@@ -27,7 +29,11 @@ export const authRoutes: Routes = [
         
 
 
-    ]
+    ],
+        providers: [
+            importProvidersFrom(MatSnackBarModule)
+        ]
+
 }
 ];
 export default authRoutes;

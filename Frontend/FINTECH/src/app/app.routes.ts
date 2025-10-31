@@ -4,6 +4,9 @@ import { Routes } from '@angular/router';
 import { DashboardComponent } from './components/pages/dashboard/dashboard.component';
 import { LoadingComponent } from './components/pages/loading/loading.component';
 import { HomeComponent } from './components/pages/home/home.component';
+import { IncomeComponent } from './components/pages/income/income.component';
+import { importProvidersFrom } from '@angular/core';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 
 export const routes: Routes = [
@@ -26,6 +29,10 @@ export const routes: Routes = [
       component: LoadingComponent
    },
    {
+      path: 'income',
+      component: IncomeComponent
+   },
+   {
       path: 'home',
       component: HomeComponent
    },
@@ -33,7 +40,12 @@ export const routes: Routes = [
       path: '**',
       redirectTo: 'home'
 
-   }
+   },
+    
+
+];
+export const appProviders = [
+   importProvidersFrom(MatSnackBarModule)
 ];
 
 export default routes;

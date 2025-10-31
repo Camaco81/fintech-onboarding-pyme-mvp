@@ -1,15 +1,18 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-// 🔑 1. Importaciones de Firebase AUTH (Necesarias para sendEmailVerification, signOut)
+
+// 🔑 Firebase AUTH
 import { 
   Auth, 
   UserCredential, 
   signInWithEmailAndPassword, 
   sendEmailVerification, 
   signOut,
+  updateProfile, // 🟢 NUEVO: Importamos esta función
   User
 } from '@angular/fire/auth'; 
-// 🔑 2. Importaciones de Firestore (Necesarias para usar Firestore)
+
+// 🔑 Firestore
 import { 
   Firestore, 
   collection, 
@@ -17,40 +20,33 @@ import {
   addDoc 
 } from '@angular/fire/firestore'; 
 
-// 🔑 3. Importaciones de RxJS (Necesarias para from, firstValueFrom, switchMap)
+// 🔑 RxJS
 import { firstValueFrom, from, Observable, switchMap } from 'rxjs'; 
 
-// 🚨 IMPORTANTE: En un proyecto real de Angular, usarías 'environment.prod.ts' aquí
-// Para simplificar, definimos la constante directamente.
+// URL del backend Flask
 const API_BASE_URL = 'https://fintech-onboarding-pyme-mvp.onrender.com/api/v1';
-
 
 interface FlaskUser {
   email: string;
   token: string;
   uid: string;
   providerId: string;
-
-  // ... otros campos
 }
-
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   
-  // 🔑 Inyección usando 'inject' (Patrón Angular Standalone)
   private auth: Auth = inject(Auth); 
   private firestore: Firestore = inject(Firestore); 
   private http = inject(HttpClient);
   
-  // 🟢 URL de tu API de Flask AJUSTADA a la de Render
   private FLASK_BASE_URL = API_BASE_URL; 
   private AUTH_URL = `${API_BASE_URL}/auth`;
-  
+
   // =========================================================================
-  // LOGIC FOR LOGIN
+  // LOGIN
   // =========================================================================
 
   async login(email: string, password: string): Promise<UserCredential> {
@@ -63,15 +59,14 @@ export class AuthService {
   }
 
   // =========================================================================
-  // LOGIC FOR REGISTER (Llamada a Flask y Verificación de Email)
+  // REGISTER (Llamada a Flask + actualización de nombre en Firebase)
   // =========================================================================
   
-  async callFlaskSetupUser(nombre: string,email: string, password: string,  telefono: string): Promise<any> {
-    // 🟢 CORREGIDO: Usamos la URL de Producción
+  async callFlaskSetupUser(nombre: string, email: string, password: string, telefono: string): Promise<any> {
     const FLASK_SETUP_USER_URL = `${this.AUTH_URL}/setup-user`; 
     
     try {
-      // 🟢 CORREGIDO: Usamos la nueva constante para el endpoint de producción
+      // 🔹 1. Crear usuario en el backend Flask
       const response = await fetch(FLASK_SETUP_USER_URL, { 
         method: 'POST',
         headers: {
@@ -93,18 +88,33 @@ export class AuthService {
         throw error;
       }
 
+      // 🔹 2. Hacer login en Firebase para obtener el usuario actual
+      const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
+
+      // 🔹 3. Actualizar el displayName del usuario recién creado
+      if (userCredential.user) {
+        await updateProfile(userCredential.user, {
+          displayName: nombre
+        });
+        console.log('✅ Nombre actualizado en Firebase Auth:', nombre);
+      }
+
       return data;
 
     } catch (error) {
+      console.error('❌ Error en callFlaskSetupUser:', error);
       throw error;
     }
   }
-  async getUserDisplayName(): Promise<string | null> {
+
+  // =========================================================================
+  // Obtener el nombre (si está disponible en backend)
+  // =========================================================================
+
+  async getUserDisplayName(): Promise<string > {
     try {
       const currentUser = this.auth.currentUser;
-      if (!currentUser) {
-        return null;
-      }
+      if (!currentUser) return 'string';
 
       const FLASK_USER_URL = `${this.AUTH_URL}/user/${currentUser.uid}`;
       const response = await fetch(FLASK_USER_URL, {
@@ -114,24 +124,20 @@ export class AuthService {
         }
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to fetch user data');
-      }
+      if (!response.ok) throw new Error('Failed to fetch user data');
 
       const userData = await response.json();
-      return userData.nombre_completo || null;
+      return userData.nombre_completo || currentUser.displayName || null; // 🟢 Devuelve el que exista
 
     } catch (error) {
       console.error('Error getting user display name:', error);
-      return null;
+      return 'string';
     }
   }
 
-  // Métodos que faltaban en tu archivo:
-  
-  // -------------------------------------------------------------------------
-  // EJEMPLO: Funcionalidad de Firestore
-  // -------------------------------------------------------------------------
+  // =========================================================================
+  // Firestore Utils
+  // =========================================================================
 
   async addData(collectionName: string, data: any) {
     try {
@@ -154,9 +160,9 @@ export class AuthService {
     }
   }
 
-  // -------------------------------------------------------------------------
-  // EJEMPLO: Función Protegida
-  // -------------------------------------------------------------------------
+  // =========================================================================
+  // Test Protected Route
+  // =========================================================================
 
   async testProtectedRoute(): Promise<Observable<any>> {
     const user: User | null = await this.auth.currentUser; 
@@ -169,14 +175,12 @@ export class AuthService {
     }
 
     const token = await user.getIdToken(true); 
-    
     const headers = { 'Authorization': `Bearer ${token}` };
-    
-    // 🟢 CORREGIDO: Usamos la URL de Producción
     const url = `${this.AUTH_URL}/test-pyme-access`;
     
-    return this.http.get(url, { headers: headers });
+    return this.http.get(url, { headers });
   }
+
   getCurrentUser(): User | null {
     return this.auth.currentUser;
   }

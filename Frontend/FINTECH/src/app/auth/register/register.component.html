@@ -4,17 +4,18 @@
 
     <form #registerForm="ngForm" (ngSubmit)="onRegister(registerForm)">
       <div class="mb-4">
-        <label class="block text-sm font-medium text-gray-700 mb-1">Nombre Completo</label>
+        <label class="block text-lg font-medium text-gray-700 mb-1">Nombre Completo</label>
         <input 
           type="text"
           name="nombre"
           [(ngModel)]="nombre"
+          placeholder="Nombre Completo"
           required
           class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500"
         />
             <span 
                 *ngIf="registerForm.form.controls['nombre']?.invalid && registerForm.form.controls['nombre']?.touched"
-                class="text-red-500 text-sm mt-1 block"
+                class="text-red-500 text-lg mt-1 block"
                 >
                 El nombre es obligatorio.
             </span>
@@ -22,17 +23,18 @@
     
 
       <div class="mb-4">
-        <label class="block text-sm font-medium text-gray-700 mb-1">Correo Electrónico</label>
+        <label class="block text-lg font-medium text-gray-700 mb-1">Correo Electrónico</label>
         <input 
           type="email"
           name="email"
           [(ngModel)]="email"
+          placeholder="correo electronico"
           required
           class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500"
         />
         <span 
                 *ngIf="registerForm.form.controls['email']?.invalid && registerForm.form.controls['email']?.touched"
-                class="text-red-500 text-sm mt-1 block"
+                class="text-red-500 text-lg mt-1 block"
                 >
                 El correo electronico es obligatorio.
             </span>
@@ -40,50 +42,64 @@
       
 
       <div class="mb-4">
-        <label class="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
+        <label class="block text-lg font-medium text-gray-700 mb-1">Contraseña</label>
         <input 
           type="password"
           name="password"
           [(ngModel)]="password"
+          placeholder="Password"
           required
           class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500"
         />
         <span 
                 *ngIf="registerForm.form.controls['password']?.invalid && registerForm.form.controls['password']?.touched"
-                class="text-red-500 text-sm mt-1 block"
+                class="text-red-500 text-lg mt-1 block"
                 >
                 El password es obligatorio.
             </span>
       </div>
 
       <div class="mb-6">
-        <label class="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
+        <label class="block text-lg font-medium text-gray-700 mb-1">Teléfono</label>
         <input 
           type="text"
           name="telefono"
           [(ngModel)]="telefono"
+          placeholder="No Telefonico"
           required
           class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500"
         />
         <span 
                 *ngIf="registerForm.form.controls['telefono']?.invalid && registerForm.form.controls['telefono']?.touched"
-                class="text-red-500 text-sm mt-1 block"
+                class="text-red-500 text-lg mt-1 block"
                 >
                 El telefono es obligatorio.
             </span>
       </div>
+      <div class="flex justify-between items-center mb-6">
+            <a href="#" class=" text-lg font-sans text-blue-600 hover:underline ">Ya tienes cuenta.Iniciar Sesión</a>
+        </div>
 
       <button
         type="submit"
         [disabled]="loading || registerForm.invalid"
-        class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg transition"
+        class="w-full text-lg bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg transition"
       >
         {{ loading ? 'Registrando...' : 'Registrarse' }}
       </button>
     </form>
 
+    <div *ngIf="loading" class="text-center mt-4">
+      <div class="sweet-loading">
+        <div class="loader"></div>
+        <p class="text-gray-600">Por favor espere...</p>
+      </div>
+    </div>
+
+    
+
     <!-- Mensajes -->
-    <p *ngIf="successMessage" class="text-green-600 text-sm mt-4">{{ successMessage }}</p>
-    <p *ngIf="errorMessage" class="text-red-600 text-sm mt-4">{{ errorMessage }}</p>
+    <p *ngIf="successMessage" class="text-green-600 text-lg mt-4">{{ successMessage }}</p>
+    <p *ngIf="errorMessage" class="text-red-600 text-lg mt-4">{{ errorMessage }}</p>
   </div>
 </div>
