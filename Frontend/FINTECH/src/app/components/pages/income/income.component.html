@@ -1,43 +1,125 @@
-<div class="flex justify-center items-center min-h-screen bg-gray-50">
-  <div class="bg-white p-6 rounded-2xl shadow-md w-full max-w-md">
-    <h2 class="text-xl font-bold mb-4 text-center">💵 Registrar Ingreso</h2>
+<main class="container mx-auto p-6">
+<nav class="flex items-center text-lg font-medium text-muted-light dark:text-muted-dark ">
+<a class="text-blue-600 hover:text-blue-900 font-semibold text-xl transition-colors" routerLink="/home" >Inicio</a>
+<span class="mx-2 font-extrabold text-blue-700">/</span>
+<a class="text-blue-600 hover:text-blue-900 font-semibold text-xl transition-colors" routerLink="/dashboard">Ingresos</a>
+<span class="mx-2 font-extrabold text-blue-700">/</span>
+
+<a class="text-blue-600 hover:text-blue-900 font-semibold text-xl transition-colors" routerLink="/auth/profile">Tu perfil</a>
+<span class="mx-2 font-extrabold text-blue-700">/</span>
+
+</nav>
+
+<div class="flex justify-center items-center min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-md">
+    <h2 class="text-2xl font-bold mb-6 text-center text-gray-900 dark:text-white">
+      💵 Registrar Nuevo Ingreso
+    </h2>
 
     <form [formGroup]="incomeForm" (ngSubmit)="registrarIngreso()">
 
       <div class="mb-4">
-        <label class="block font-medium mb-1">Descripción</label>
-        <input formControlName="descripcion" type="text" class="w-full border p-2 rounded" placeholder="Ej: Venta de producto" />
+        <label class="block font-medium mb-1 text-gray-700 dark:text-gray-300">Descripción</label>
+        <input 
+          formControlName="descripcion" 
+          type="text" 
+          class="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white p-3 rounded-lg focus:ring-blue-500 focus:border-blue-500" 
+          placeholder="Ej: Salario de Fintegra, Venta de Producto" 
+        />
+        <div 
+          *ngIf="incomeForm.get('descripcion')?.invalid && incomeForm.get('descripcion')?.touched"
+          class="text-red-500 text-sm mt-1"
+        >
+          <small *ngIf="incomeForm.get('descripcion')?.errors?.['required']">
+            La descripción es obligatoria.
+          </small>
+          <small *ngIf="incomeForm.get('descripcion')?.errors?.['minlength']">
+            Debe tener al menos 3 caracteres.
+          </small>
+        </div>
       </div>
 
       <div class="mb-4">
-        <label class="block font-medium mb-1">Monto</label>
-        <input formControlName="monto" type="number" class="w-full border p-2 rounded" placeholder="Ej: 50000" />
+        <label class="block font-medium mb-1 text-gray-700 dark:text-gray-300">Monto</label>
+        <input 
+          formControlName="monto" 
+          type="number" 
+          class="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white p-3 rounded-lg focus:ring-blue-500 focus:border-blue-500" 
+          placeholder="Ej: 50000.00" 
+        />
+        <div 
+          *ngIf="incomeForm.get('monto')?.invalid && incomeForm.get('monto')?.touched"
+          class="text-red-500 text-sm mt-1"
+        >
+          <small *ngIf="incomeForm.get('monto')?.errors?.['required']">
+            El monto es obligatorio.
+          </small>
+          <small *ngIf="incomeForm.get('monto')?.errors?.['min']">
+            El monto debe ser superior a cero.
+          </small>
+        </div>
       </div>
 
       <div class="mb-4">
-        <label class="block font-medium mb-1">Categoría</label>
-        <select formControlName="categoria" class="w-full border p-2 rounded">
+        <label class="block font-medium mb-1 text-gray-700 dark:text-gray-300">Categoría</label>
+        <select 
+          formControlName="categoria" 
+          class="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white p-3 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+        >
           <option value="" disabled selected>Seleccionar categoría</option>
+          <option value="salario">Salario</option>
           <option value="venta">Venta</option>
           <option value="servicio">Servicio</option>
+          <option value="inversion">Inversión</option>
           <option value="otros">Otros</option>
         </select>
+         <div 
+          *ngIf="incomeForm.get('categoria')?.invalid && incomeForm.get('categoria')?.touched"
+          class="text-red-500 text-sm mt-1"
+        >
+          <small *ngIf="incomeForm.get('categoria')?.errors?.['required']">
+            La categoría es obligatoria.
+          </small>
+        </div>
       </div>
 
-      <div class="mb-4">
-        <label class="block font-medium mb-1">Fecha</label>
-        <input formControlName="fecha" type="date" class="w-full border p-2 rounded" />
+      <div class="mb-6">
+        <label class="block font-medium mb-1 text-gray-700 dark:text-gray-300">Fecha</label>
+        <input 
+          formControlName="fecha" 
+          type="date" 
+          class="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white p-3 rounded-lg focus:ring-blue-500 focus:border-blue-500" 
+        />
+         <div 
+          *ngIf="incomeForm.get('fecha')?.invalid && incomeForm.get('fecha')?.touched"
+          class="text-red-500 text-sm mt-1"
+        >
+          <small *ngIf="incomeForm.get('fecha')?.errors?.['required']">
+            La fecha es obligatoria.
+          </small>
+        </div>
       </div>
 
       <button 
         type="submit" 
         [disabled]="incomeForm.invalid || loading"
-        class="bg-green-600 text-white font-bold py-2 px-4 rounded w-full hover:bg-green-700 transition">
-        {{ loading ? 'Guardando...' : 'Registrar Ingreso' }}
+        class="bg-green-600 text-white font-bold py-3 px-4 rounded-lg w-full transition duration-150 ease-in-out"
+        [ngClass]="{'opacity-50 cursor-not-allowed': incomeForm.invalid || loading, 'hover:bg-green-700': !incomeForm.invalid && !loading}"
+      >
+        <span *ngIf="loading" class="flex items-center justify-center">
+            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Guardando...
+        </span>
+        <span *ngIf="!loading">Registrar Ingreso</span>
       </button>
     </form>
 
-    <p *ngIf="successMessage" class="text-green-600 mt-3 text-center">{{ successMessage }}</p>
-    <p *ngIf="errorMessage" class="text-red-600 mt-3 text-center">{{ errorMessage }}</p>
+    </div>
+
+
+
   </div>
-</div>
+  </main>

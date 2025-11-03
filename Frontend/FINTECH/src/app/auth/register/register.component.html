@@ -1,89 +1,94 @@
-<div class="flex items-center justify-center min-h-screen bg-gray-50">
+<div class="flex flex-col font-semibold items-center justify-center min-h-screen pb-32 bg-white">
   <div class="bg-white p-8 rounded-2xl shadow-md w-full max-w-md">
-    <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">Crear Cuenta</h2>
+    <h2 class="text-3xl font-semibold mb-6 text-center text-gray-800">Crear Cuenta</h2>
+    <p class="text-center text-lg mb-5 text-blue-500" >Registra los datos de tu cuenta.</p>
 
-    <form #registerForm="ngForm" (ngSubmit)="onRegister(registerForm)">
-      <div class="mb-4">
-        <label class="block text-lg font-medium text-gray-700 mb-1">Nombre Completo</label>
+    <form class="w-full max-w-xs" [formGroup]="registerForm" (ngSubmit)="onRegister()">
+      
+      <div class="mb-4 text-lg font-semibold">
         <input 
           type="text"
-          name="nombre"
-          [(ngModel)]="nombre"
-          placeholder="Nombre Completo"
-          required
-          class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500"
+          formControlName="nombre" placeholder="Nombre Completo"
+          class="form-control w-full px-4 py-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
-            <span 
-                *ngIf="registerForm.form.controls['nombre']?.invalid && registerForm.form.controls['nombre']?.touched"
-                class="text-red-500 text-lg mt-1 block"
-                >
-                El nombre es obligatorio.
-            </span>
+        <span 
+          *ngIf="formControls['nombre'].invalid && formControls['nombre'].touched"
+          class="text-red-500 text-lg mt-1 block"
+        >
+          <small *ngIf="formControls['nombre'].errors?.['required']">
+            El nombre es obligatorio.
+          </small>
+        </span>
       </div>
     
-
-      <div class="mb-4">
-        <label class="block text-lg font-medium text-gray-700 mb-1">Correo Electrónico</label>
+      <div class="mb-4 text-lg font-semibold">
         <input 
           type="email"
-          name="email"
-          [(ngModel)]="email"
-          placeholder="correo electronico"
-          required
-          class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500"
+          formControlName="email"
+          placeholder="Correo electrónico"
+          class="form-control w-full px-4 py-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         <span 
-                *ngIf="registerForm.form.controls['email']?.invalid && registerForm.form.controls['email']?.touched"
-                class="text-red-500 text-lg mt-1 block"
-                >
-                El correo electronico es obligatorio.
-            </span>
+          *ngIf="formControls['email'].invalid && formControls['email'].touched"
+          class="text-red-500 text-lg mt-1 block"
+        >
+          <small *ngIf="formControls['email'].errors?.['required']">
+            El correo electrónico es obligatorio.
+          </small>
+          <small *ngIf="formControls['email'].errors?.['email']">
+            Formato de email no válido.
+          </small>
+        </span>
       </div>
       
-
-      <div class="mb-4">
-        <label class="block text-lg font-medium text-gray-700 mb-1">Contraseña</label>
+      <div class="mb-4 text-lg font-semibold">
         <input 
           type="password"
-          name="password"
-          [(ngModel)]="password"
-          placeholder="Password"
-          required
-          class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500"
+          formControlName="password"
+          placeholder="Contraseña"
+          class="form-control w-full px-4 py-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         <span 
-                *ngIf="registerForm.form.controls['password']?.invalid && registerForm.form.controls['password']?.touched"
-                class="text-red-500 text-lg mt-1 block"
-                >
-                El password es obligatorio.
-            </span>
+          *ngIf="formControls['password'].invalid && formControls['password'].touched"
+          class="text-red-500 text-lg mt-1 block"
+        >
+          <small *ngIf="formControls['password'].errors?.['required']">
+            La contraseña es obligatoria.
+          </small>
+          <small *ngIf="formControls['password'].errors?.['minlength']">
+            Debe tener al menos 6 caracteres.
+          </small>
+        </span>
       </div>
 
-      <div class="mb-6">
-        <label class="block text-lg font-medium text-gray-700 mb-1">Teléfono</label>
+      <div class="mb-4 text-lg font-semibold">
         <input 
           type="text"
-          name="telefono"
-          [(ngModel)]="telefono"
-          placeholder="No Telefonico"
-          required
-          class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500"
+          formControlName="telefono"
+          placeholder="No. Telefónico (ej: 10 dígitos)"
+          class="form-control w-full px-4 py-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         <span 
-                *ngIf="registerForm.form.controls['telefono']?.invalid && registerForm.form.controls['telefono']?.touched"
-                class="text-red-500 text-lg mt-1 block"
-                >
-                El telefono es obligatorio.
-            </span>
+          *ngIf="formControls['telefono'].invalid && formControls['telefono'].touched"
+          class="text-red-500 text-lg mt-1 block"
+        >
+          <small *ngIf="formControls['telefono'].errors?.['required']">
+            El teléfono es obligatorio.
+          </small>
+          <small *ngIf="formControls['telefono'].errors?.['pattern']">
+            Formato de teléfono no válido (solo números, 10-15 dígitos).
+          </small>
+        </span>
       </div>
+
       <div class="flex justify-between items-center mb-6">
-            <a href="#" class=" text-lg font-sans text-blue-600 hover:underline ">Ya tienes cuenta.Iniciar Sesión</a>
-        </div>
+        <a routerLink="/login" class=" text-lg font-sans flex items-center text-blue-400 hover:underline ">Ya tienes cuenta. Inicia Sesión</a>
+      </div>
 
       <button
         type="submit"
         [disabled]="loading || registerForm.invalid"
-        class="w-full text-lg bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg transition"
+        class="w-full py-3 bg-blue-700 text-lg font-light text-white rounded hover:bg-blue-500 transition-colors"
       >
         {{ loading ? 'Registrando...' : 'Registrarse' }}
       </button>
@@ -91,14 +96,11 @@
 
     <div *ngIf="loading" class="text-center mt-4">
       <div class="sweet-loading">
-        <div class="loader"></div>
+        <div class="loader"></div> 
         <p class="text-gray-600">Por favor espere...</p>
       </div>
     </div>
-
     
-
-    <!-- Mensajes -->
     <p *ngIf="successMessage" class="text-green-600 text-lg mt-4">{{ successMessage }}</p>
     <p *ngIf="errorMessage" class="text-red-600 text-lg mt-4">{{ errorMessage }}</p>
   </div>

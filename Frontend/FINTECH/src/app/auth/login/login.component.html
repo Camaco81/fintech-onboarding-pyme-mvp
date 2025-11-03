@@ -1,6 +1,6 @@
 
 <div class="flex flex-col font-semibold items-center justify-center min-h-screen pb-32 bg-white">
-    <h1 class="text-center text-5xl font-bold mb-8">Inicio sesión </h1>
+    <h2 class="text-center text-3xl font-semibold mb-8">Inicio sesión </h2>
     <p class="text-center text-lg mb-5 text-blue-500" >Accede a tu cuenta para continuar</p>
     <form class="w-full max-w-xs" 
     autocomplete="off"   
@@ -16,7 +16,7 @@
                     Ingresa un correo electrónico válido.
                 </span>
         </div>
-        <div class="mb-4 text-xl font-semibold">
+        <div class="mb-4 text-lg font-semibold">
             <input type="password" 
             formControlName="password"
             placeholder="Contraseña" 
@@ -38,13 +38,14 @@
         </div>
 
         <div class="flex justify-between items-center mb-6">
-            <a href="auth/register" class="text-lg font-san flex items-center text-blue-400 hover:underline">Aun no tienes cuenta?Registrate</a>
+            <a href="auth/register" class="text-lg font-sans flex items-center text-blue-400 hover:underline">Aun no tienes cuenta?Registrate</a>
         </div>
-        <button type="submit" (ngSubmit)="loadUserName()"
-        [disabled]="loginForm.invalid"
-        class="w-full py-3 bg-blue-700 text-lg text-white rounded hover:bg-blue-500 font-semibold  transition-colors">
-            
-        Entrar
-        </button>
+        <button 
+  type="submit" 
+  [disabled]="loginForm.invalid" 
+  class="w-full py-3 bg-blue-700 text-lg font-light text-white rounded hover:bg-blue-500 transition-colors"
+>
+  Entrar
+</button>
     </form>
 </div>

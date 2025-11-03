@@ -5,22 +5,25 @@
 <div class="mx-auto max-w-4xl">
 <div class="mb-8">
 <nav class="flex items-center text-sm font-medium text-muted-light dark:text-muted-dark">
-<a class="hover:text-primary transition-colors" href="#">Loans</a>
-<span class="mx-2">/</span>
-<a class="hover:text-primary transition-colors" href="#">Application</a>
-<span class="mx-2">/</span>
-<span class="text-foreground-light dark:text-foreground-dark">Upload Documents</span>
+<a class="text-blue-600 hover:text-blue-900 font-semibold text-xl transition-colors" >Subir documentos</a>
+<span class="mx-2 font-extrabold text-blue-700">/</span>
+<a class="text-blue-600 hover:text-blue-900 font-semibold text-xl transition-colors" routerLink="/dashboard">Ingresos</a>
+<span class="mx-2 font-extrabold text-blue-700">/</span>
+
+<a class="text-blue-600 hover:text-blue-900 font-semibold text-xl transition-colors" routerLink="/auth/profile">Tu perfil</a>
+<span class="mx-2 font-extrabold text-blue-700">/</span>
+
 </nav>
 </div>
 <div class="mb-8">
-<h1 class="text-3xl font-bold tracking-tight">Upload Documents</h1>
+<h1 class="text-3xl font-bold tracking-tight">Sube tu documento de identidad</h1>
 <p class="mt-2 text-muted-light dark:text-muted-dark">
-                        Please upload the required documents to complete your loan application. You can drag and drop files or use the upload button.
+                        En este espacio puedes subir los documentos necesarios para completar tu registro y realizar verificaciones de seguridad.
                     </p>
 </div>
 <div class="space-y-12">
 <div class="space-y-4">
-<h2 class="text-xl font-semibold">Business Documents</h2>
+<h2 class="text-xl font-semibold">Si eres empresa</h2>
 <div class="rounded-lg border-2 border-dashed border-border-light dark:border-border-dark bg-background-light dark:bg-subtle-dark/50 p-8 text-center">
 <div class="flex flex-col items-center gap-4">
 <div class="flex h-16 w-16 items-center justify-center rounded-full bg-subtle-light dark:bg-subtle-dark">
@@ -28,17 +31,17 @@
 <path d="M12 16.5V9.75m0 0l-3.75 3.75M12 9.75l3.75 3.75M3 17.25V21a2.25 2.25 0 002.25 2.25h13.5A2.25 2.25 0 0021 21v-3.75" stroke-linecap="round" stroke-linejoin="round"></path>
 </svg>
 </div>
-<p class="font-semibold">Drag and drop files here</p>
-<p class="text-sm text-muted-light dark:text-muted-dark">Or click to browse</p>
+<p class="font-semibold">Arrastra tus documentos</p>
+<p class="text-sm text-muted-light dark:text-muted-dark"> O busca en tu equipo.</p>
 <button class="mt-2 h-10 px-4 inline-flex items-center justify-center rounded-lg bg-primary text-white text-sm font-medium transition-colors hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-background-dark">
-                                    Upload Files
+                                    Subir archivos
                                 </button>
 </div>
 </div>
-<p class="text-xs text-muted-light dark:text-muted-dark">Accepted file types: PDF, JPG. Maximum file size: 10MB</p>
+<p class="text-xs text-muted-light dark:text-muted-dark">Archivos aceptados: PDF, JPG. Tamaño maximo: 10MB</p>
 </div>
 <div class="space-y-4">
-<h2 class="text-xl font-semibold">Personal Documents</h2>
+<h2 class="text-xl font-semibold">Si eres persona natural</h2>
 <div class="rounded-lg border-2 border-dashed border-border-light dark:border-border-dark bg-background-light dark:bg-subtle-dark/50 p-8 text-center">
 <div class="flex flex-col items-center gap-4">
 <div class="flex h-16 w-16 items-center justify-center rounded-full bg-subtle-light dark:bg-subtle-dark">
@@ -46,22 +49,22 @@
 <path d="M12 16.5V9.75m0 0l-3.75 3.75M12 9.75l3.75 3.75M3 17.25V21a2.25 2.25 0 002.25 2.25h13.5A2.25 2.25 0 0021 21v-3.75" stroke-linecap="round" stroke-linejoin="round"></path>
 </svg>
 </div>
-<p class="font-semibold">Drag and drop files here</p>
-<p class="text-sm text-muted-light dark:text-muted-dark">Or click to browse</p>
+<p class="font-semibold">Arrastra tus documentos</p>
+<p class="text-sm text-muted-light dark:text-muted-dark">O busca en tu equipo.</p>
 <button class="mt-2 h-10 px-4 inline-flex items-center justify-center rounded-lg bg-primary text-white text-sm font-medium transition-colors hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-background-dark">
-                                    Upload Files
+                                    Subir archivos
                                 </button>
 </div>
 </div>
-<p class="text-xs text-muted-light dark:text-muted-dark">Accepted file types: PDF, JPG. Maximum file size: 10MB</p>
+<p class="text-xs text-muted-light dark:text-muted-dark">Archivos aceptados: PDF, JPG. Tamaño maximo: 10MB</p>
 </div>
 </div>
 <div class="mt-12 flex justify-end gap-4">
-<button class="h-10 px-4 inline-flex items-center justify-center rounded-lg bg-subtle-light dark:bg-subtle-dark text-sm font-medium transition-colors hover:bg-primary/20 dark:hover:bg-primary/30">
-                        Back
+<button class="bg-blue-600 hover:bg-blue-700 text-white font-light px-4 py-2 rounded shadow" routerLink="/home">
+                        Regresar
                     </button>
-<button class="h-10 px-6 inline-flex items-center justify-center rounded-lg bg-primary text-white text-sm font-medium transition-colors hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-background-dark">
-                        Submit Application
+<button class="bg-blue-600 hover:bg-blue-700 text-white font-light px-4 py-2 rounded shadow" routerLink="/home">
+                        Enviar Solicitud
                     </button>
 </div>
 </div>

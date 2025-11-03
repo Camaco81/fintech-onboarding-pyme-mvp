@@ -2,63 +2,105 @@ import { Component } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { IncomeService } from '../../../services/income.service';
-import { NotifyService } from '../../../services/notify.service';
+// import { NotifyService } from '../../../services/notify.service'; // ❌ Ya no es necesario si usamos Swal
 import Swal from 'sweetalert2';
-
 
 
 @Component({
   selector: 'app-income',
-  imports: [ReactiveFormsModule, CommonModule],
+  standalone: true, // Asegurar que sea standalone
+  imports: [ReactiveFormsModule, CommonModule,RouterLink],
   templateUrl: './income.component.html',
   styleUrl: './income.component.css'
 })
 export class IncomeComponent {
 
-  incomeForm :FormGroup;
+  incomeForm: FormGroup;
   loading = false;
-  successMessage = '';
-  errorMessage = '';
+  // Propiedades 'successMessage' y 'errorMessage' ya no son necesarias para Swal
+  // successMessage = ''; 
+  // errorMessage = '';
 
-
-  constructor (private fb : FormBuilder,
-              private incomeSvc : IncomeService,
-              private notifySvc : NotifyService)
-    { 
-
+  // 💡 Eliminamos NotifyService de las inyecciones
+  constructor(private fb: FormBuilder,
+              private incomeSvc: IncomeService
+              /* private notifySvc: NotifyService */) 
+  { 
     this.incomeForm = this.fb.group({
-        descripcion: ['',[Validators.required, Validators.minLength(3)]],
-        monto: ['0',[Validators.required, Validators.minLength(3)]],
-        fecha: ['',[Validators.required]],
-        categoria: ['',[Validators.required, Validators.minLength(3)]],
-      });
-    }
-  
+      descripcion: ['', [Validators.required, Validators.minLength(3)]],
+      monto: ['0', [Validators.required, Validators.min(1)]], // Usar Validators.min(1) para asegurar un valor positivo
+      fecha: ['', [Validators.required]],
+      categoria: ['', [Validators.required, Validators.minLength(3)]],
+    });
+  }
+
+  // =====================================================================
+  // 🔹 Función para manejar el envío del formulario
+  // =====================================================================
   async registrarIngreso() {
-  this.loading = true;
+    
+    // 1. Verificar validez del formulario
+    if (this.incomeForm.invalid) {
+      this.incomeForm.markAllAsTouched();
+      await Swal.fire({
+          icon: 'warning',
+          title: 'Formulario Inválido',
+          text: 'Por favor, revisa y completa todos los campos requeridos correctamente.',
+          confirmButtonColor: '#3085d6',
+      });
+      return;
+    }
 
-  try {
-  try {
-    // addIngreso likely returns void/Promise<void>, so just await it without checking its truthiness
-    await this.incomeSvc.addIngreso(this.incomeForm.value);
+    this.loading = true;
 
-    this.notifySvc.success('Ingreso registrado', '✅ El ingreso se ha guardado correctamente.');
-    this.incomeForm.reset({ fecha: new Date() });
+    // 2. Mostrar alerta de carga con SweetAlert2
+    Swal.fire({
+      title: 'Registrando Ingreso...',
+      text: 'Por favor, espera mientras se procesa la transacción.',
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
 
-  } catch (error: any) {
-    console.error('Error al registrar ingreso:', error);
+    try {
+      // 3. Llamada al servicio
+      await this.incomeSvc.addIngreso(this.incomeForm.value);
 
-    this.notifySvc.error('Error', '❌ No se pudo registrar el ingreso. Intenta nuevamente.');
+      // 4. Si el registro es exitoso:
+      // Cerrar alerta de carga y mostrar éxito
+      Swal.close(); 
+      await Swal.fire({
+        icon: 'success',
+        title: '¡Ingreso Registrado! ✅',
+        text: 'El ingreso se ha guardado correctamente en tu billetera.',
+        confirmButtonColor: '#3085d6',
+        timer: 3000 // Se cierra automáticamente después de 3 segundos
+      });
+      
+      // Reiniciar el formulario
+      this.incomeForm.reset({ fecha: new Date().toISOString().substring(0, 10), monto: '0' }); // Opcional: Establecer fecha actual
+      
+    } catch (error: any) {
+      // 5. Si ocurre un error:
+      console.error('Error al registrar ingreso:', error);
+      
+      // Cerrar alerta de carga y mostrar error
+      Swal.close();
+      const errorMessage = (error as any)?.message ?? 'No se pudo registrar el ingreso. Intenta nuevamente.';
+      
+      await Swal.fire({
+        icon: 'error',
+        title: 'Error de Registro ❌',
+        text: errorMessage,
+        confirmButtonColor: '#d33',
+      });
 
-  } finally {
-    this.loading = false;
+    } finally {
+      // 6. Finalizar la carga
+      this.loading = false;
+    }
   }
-} catch (error) {
-  console.error('Error inesperado:', error);
-  this.notifySvc.error('Error', '❌ Ocurrió un error inesperado. Intenta nuevamente.');
-  this.loading = false;
 }
-  }
-}
-  
